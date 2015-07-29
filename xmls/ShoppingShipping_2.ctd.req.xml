@@ -2,10 +2,10 @@
 <!DOCTYPE focus-req [
  ]>
 
-<!--Demonstration application for shopping and shipping restrictions added-->
-<focus-req manual="true" inputOutput="false" negativeValuesEnabled="true">
+<!--Demonstration application for shopping and shipping requirements added-->
+<focus-req>
   <requirement>
-    <attribute name="OrderShipping" description="A valid item that is not in stock." negative_value="false"/>
-	<attribute name="CustomerCreditStatus" description="A valid item that is in stock" negative_value="false"/>
+    <attribute name="OrderShipping" />
+	<attribute name="CustomerCreditStatus" />
   </requirement>
 </focus-req>
