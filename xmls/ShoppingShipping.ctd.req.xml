@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="US-ASCII" standalone="no"?>
+<!DOCTYPE focus-req [
+ ]>
+
+<!--Demonstration application for shopping and shipping restrictions added-->
+<focus-req manual="true" inputOutput="false" negativeValuesEnabled="true">
+  <requirement>
+    <attribute name="OrderShippingDestination" description="A valid item that is in stock" negative_value="false"/>
+    <attribute name="OrderShipping" description="A valid item that is not in stock." negative_value="false"/>
+  </requirement>
+  <requirement>
+    <attribute name="OrderDeliveryTimeframe" description="A valid item that is in stock" negative_value="false"/>
+    <attribute name="OrderShippingDestination" description="A valid item that is not in stock." negative_value="false"/>
+  </requirement>
+</focus-req>

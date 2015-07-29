@@ -19,11 +19,11 @@ public class main {
 		myJavaBdd javaBdd = new myJavaBdd();
 		//javaBdd.runPaypal();
 		
-		String model1 = "C:\\Users\\amirshwa\\workspace1\\ShoppingShipping.model";
-		String model2 = "C:\\Users\\amirshwa\\workspace1\\ShoppingShipping_2.model";
+		String model1 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping.model";
+		String model2 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping_2.model";
 		
-		String req1 = "C:\\Users\\amirshwa\\workspace1\\ShoppingShipping.ctd.req.xml";
-		String req2 = "C:\\Users\\amirshwa\\workspace1\\ShoppingShipping_2.ctd.req.xml";
+		String req1 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping.ctd.req.xml";
+		String req2 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping_2.ctd.req.xml";
 		
 		javaBdd.RunParser(model1,req1,model2,req2);
 		
