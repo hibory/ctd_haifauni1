@@ -3,6 +3,7 @@ package hellobdd;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import net.sf.javabdd.BDD;
@@ -122,7 +123,7 @@ public class myJavaBdd {
 		Computation(m1,r1,m2,r2);
 	}
 	
-	public void Computation(FocusModel m1, List<Req> r1, FocusModel m2, List<Req> r2){
+	public BDD Computation(FocusModel m1, List<Req> r1, FocusModel m2, List<Req> r2){
 		
 		BDD T1 = bdd.zero(),T2 = bdd.zero() ,T21 = bdd.zero();
 		BDD e1 = m1.Valid;
@@ -173,11 +174,11 @@ public class myJavaBdd {
 			}
 		}
 		
-		//PrintAsDot("T1",T1);
-		//PrintAsDot("T2",T2);
-		//PrintAsDot("T21",T21);
-		
 		T21.printSet();
+		
+        
+		
+		return T21;
 	}
 
 	private BDD GetVar(char c) {
@@ -308,7 +309,8 @@ public class myJavaBdd {
 		List<Req> r1 = compParser.Parser1.Requirements;
 		List<Req> r2 = compParser.Parser2.Requirements;
 		bdd = compParser.BddFactory;
-		Computation(m1, r1, m2, r2);
+		BDD t21 = Computation(m1, r1, m2, r2);
+		compParser.PrintResult(t21);
 		
 	}
 

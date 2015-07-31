@@ -74,6 +74,14 @@ public class FocusModelParser {
 	   //assign all requirements & valid-space
 	   Valid = bddFactory.one();
 	   
+	   //remove illigal bdds.
+	   //Example: let attribute have values {0,1,2} , thus BDD variables = x1,x2
+	   //         =>  x1.and(x2) is illigal (implies 3)
+	   for(FocusAttribute attr : AllAttributes.values()){
+		   BDD illigal = attr.GetIlligalBdd();
+		   Valid.andWith(illigal.not());
+	   }
+	   
 	   for(FocusRestriction rest : rests){
 		   
 		   BDD rulesBdd = bddFactory.one();

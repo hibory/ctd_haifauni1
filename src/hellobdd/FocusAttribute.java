@@ -39,12 +39,14 @@ public class FocusAttribute {
 	}
 
 	public BDD GetBdd(String value) {
-		
 		int index = Values.indexOf(value);
+		BDD bdd = IndexToBdd(index);
+		return bdd;
+	}
+
+	private BDD IndexToBdd(int index) {
 		String binary = Integer.toBinaryString(index);
-		
 		Debugger.log("Binary of " + Name + "is:" + binary);
-		
 		int j=0;
 		BDD bdd = BddFactory.one();
 		
@@ -88,6 +90,35 @@ public class FocusAttribute {
 			b.andWith(v);
 		}
 		return b;
+	}
+
+	public String GetValue(BDD bdd) {
+		
+		String binary="";
+		for(int i : Variables){
+			BDD v = bdd.getFactory().ithVar(i);
+			if(bdd.and(v).isZero()){
+				binary="0" + binary;
+			}
+			else
+				binary="1" + binary;
+			
+		}
+		
+		int inttt = Integer.parseInt(binary, 2);
+		return Values.get(inttt);
+	}
+	
+	public BDD GetIlligalBdd(){
+		int n = VarCount();
+		int max = (int) Math.pow(2, n);
+		
+		BDD res = BddFactory.zero();
+		for(int i=Values.size(); i<max; i++){
+			BDD b = IndexToBdd(i);
+			res.orWith(b);
+		}
+		return res;
 	}
 	
 }

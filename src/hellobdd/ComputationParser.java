@@ -2,6 +2,7 @@ package hellobdd;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.text.html.HTMLEditorKit.Parser;
@@ -14,6 +15,7 @@ public class ComputationParser {
 	public ComputationParser(String model1, String req1, String model2, String req2){
 		
 		Attributes = new HashMap<String, FocusAttribute>();
+		MutualAttributes = new HashMap<String, FocusAttribute>();
 		
 		Parser1 = new FocusModelParser(model1, req1, Attributes);
 		Parser2 = new FocusModelParser(model2, req2, Attributes);
@@ -32,6 +34,8 @@ public class ComputationParser {
 			if(!Parser2.LocalAttributes.containsKey(key)) continue;
 			
 			FocusAttribute attr = Parser1.LocalAttributes.get(key);
+			MutualAttributes.put(key, attr);
+			
 			for(int i : attr.Variables){
 				BDD v = bddFactory.ithVar(i);
 				b.andWith(v);
@@ -41,6 +45,7 @@ public class ComputationParser {
 	}
 
 	Map<String, FocusAttribute> Attributes;
+	Map<String, FocusAttribute> MutualAttributes;
 	public FocusModelParser Parser1;
 	public FocusModelParser Parser2;
 	
@@ -72,5 +77,31 @@ public class ComputationParser {
 		return count;
 	}
 
-	
+	public void PrintResult(BDD result) {
+		BDD nonMutualVars = Parser1.Model.IncludedVars
+				.and(Parser2.Model.IncludedVars)
+				.exist(Parser2.Model.MutualVars);
+		
+		Iterator<BDD> iterator = result.iterator(nonMutualVars);
+		
+		int sats=0;
+		while (iterator.hasNext()) {
+            BDD sat = iterator.next();
+            System.out.println("" + sat.toString());
+            
+            Map<String, String> Row = new HashMap<String, String>();
+            for(String key : Attributes.keySet()){
+            	if(MutualAttributes.containsKey(key)) continue;
+            	FocusAttribute attr = Attributes.get(key);
+            	String value = attr.GetValue(sat);
+            	Row.put(attr.Name, value);
+            	
+            	//System.out.print(attr.Name + ":" + value+"("+ attr.Variables.toString() + ")| ");
+            }
+            
+            //System.out.println("");
+            sats++;
+        }
+		System.out.println("Test plan size :"+sats);
+	}
 }
