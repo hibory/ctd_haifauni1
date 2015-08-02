@@ -109,18 +109,24 @@ public class myJavaBdd {
 			
 		List<Req> r1 = new ArrayList<Req>();
 		r1.add(new Req( x1.and(x2).and(x3).and(x4) ));
-		r1.add(new Req( x1.and(x2).and(x5).and(x6)));
-		r1.add(new Req( x3.and(x4).and(x5).and(x6)));
+		
+		//r1.add(new Req( x1.not().and(x2.not())));
+		//r1.add(new Req( x1.not().and(x2)));
+		//r1.add(new Req( x1.and(x2).and(x3).and(x4) ));
+		//r1.add(new Req( x1.and(x2).and(x5).and(x6)));
+		//r1.add(new Req( x3.and(x4).and(x5).and(x6)));
 		//r1.add(new Req( x1.not().and(x2.not()).and(x3.not()).and(x4.not()) , IncludedVars1 ));
 		//r1.add(new Req( x1.not().and(x2.not()).and(x5.not()).and(x6.not() ), IncludedVars1 ));
 		//r1.add(new Req( x3.not().and(x4).and(x5).and(x6.not()) , IncludedVars1 ));
 			
 		List<Req> r2 = new ArrayList<Req>();
 		r2.add(new Req( x5.and(x6).and(x7).and(x8)));
-		//r2.add(new Req( x5.and(x6.not()).and(x7.not()).and(x8.not()), IncludedVars2 ));
-		//r2.add(new Req( x5.not().and(x6.not()).and(x7).and(x8), IncludedVars2 ));
 		
-		Computation(m1,r1,m2,r2);
+		//r2.add(new Req( x5.and(x6.not()).and(x7.not()).and(x8.not()) ));
+		//r2.add(new Req( x5.not().and(x6.not()).and(x7).and(x8) ));
+		
+		BDD t21 = Computation(m1,r1,m2,r2);
+		ComputationParser.ValidateResult(t21, m1.Valid, m2.Valid);
 	}
 	
 	public BDD Computation(FocusModel m1, List<Req> r1, FocusModel m2, List<Req> r2){
@@ -134,14 +140,35 @@ public class myJavaBdd {
 		for(Req t : r1){
 			BDD excludeVars = m1.IncludedVars.restrict(t.Bdd); //this all variables except those in t
 			t.uncov = e1.exist(excludeVars); //uncov(t) = Projt(E1)
-			t.uncov = t.uncov.and(e1);
+			t.excludeVars = excludeVars;
+			
+			System.out.println("T.uncov:");
+			t.uncov.printSet();
+			
+			System.out.println("E1:");
+			e1.printSet();
+			
+			//t.uncov = t.uncov.and(e1);
+			
+			//t.uncov = e1.and(t.Bdd); //old version
 		}
 		
 		//Init: for t in R2 do uncov(t) = Projt(E2)
 		for(Req t : r2){
 			BDD excludeVars = m2.IncludedVars.restrict(t.Bdd); //this all variables except those in t
+			
+			t.excludeVars = excludeVars;
 			t.uncov = e2.exist(excludeVars); //uncov(t) = Projt(E2)
-			t.uncov = t.uncov.and(e2);
+			
+			System.out.println("T.uncov:");
+			t.uncov.printSet();
+			
+			System.out.println("E2:");
+			e2.printSet();
+			
+			//t.uncov = t.uncov.and(e2);
+			
+			//t.uncov = e2.and(t.Bdd); //old version
 		}
 		
 		while(!r1.isEmpty() || !r2.isEmpty()){
@@ -153,7 +180,7 @@ public class myJavaBdd {
 				
 				//inner join
 				BDD chosenAc = chosen.and(e2).fullSatOne();
-				chosenAc = chosenAc.exist(mutual);
+				//chosenAc = chosenAc.exist(mutual);//WithoutB Version
 				T21 = T21.or(chosenAc);
 				
 				CleanUncov(r1,chosen);
@@ -166,7 +193,7 @@ public class myJavaBdd {
 				
 				//inner join
 				BDD chosenAc = chosen.and(e1).fullSatOne();
-				chosenAc = chosenAc.exist(mutual);				
+				//chosenAc = chosenAc.exist(mutual);//WithoutB Version				
 				PrintAsDot("ChosenAC:",chosenAc);				
 				T21 = T21.or(chosenAc); 
 				
@@ -176,7 +203,36 @@ public class myJavaBdd {
 		
 		T21.printSet();
 		
-        
+		System.out.println("");
+		System.out.println("e1:");
+		e1.printSet();
+		System.out.println("satcount:"+e1.satCount(m1.IncludedVars));
+		
+		System.out.println("");
+		System.out.println("T1:");
+		T1.printSet();
+		System.out.println("satcount:"+T1.satCount(m1.IncludedVars));
+				
+		System.out.println("");
+		System.out.println("e2:");
+		e2.printSet();
+		System.out.println("satcount:"+e2.satCount(m2.IncludedVars));
+		
+		System.out.println("");
+		System.out.println("T2:");
+		T2.printSet();
+		System.out.println("satcount:"+T2.satCount(m2.IncludedVars));
+		
+		System.out.println("");
+		System.out.println("T21:");
+		T21.printSet();
+		System.out.println("satcount:"+T21.satCount(m1.IncludedVars.and(m2.IncludedVars)));
+		
+		System.out.println("");
+		System.out.println("E21:");
+		e1.and(e2).printSet();
+		System.out.println("satcount:"+e1.and(e2).satCount(m1.IncludedVars.and(m2.IncludedVars)));
+		
 		
 		return T21;
 	}
@@ -279,7 +335,8 @@ public class myJavaBdd {
 		List<Req> ToBeRemoved = new ArrayList<Req>();
 		for(Req t : r){
 			
-			BDD remaining = t.uncov.and(chosen.not());
+			BDD chosenProj = chosen.exist(t.excludeVars);
+			BDD remaining = t.uncov.and(chosenProj.not());
 			PrintAsDot("t.uncov",t.uncov);
 			PrintAsDot("t.uncov ^ chosen.not",remaining);			
 			t.uncov = remaining;
@@ -310,8 +367,9 @@ public class myJavaBdd {
 		List<Req> r2 = compParser.Parser2.Requirements;
 		bdd = compParser.BddFactory;
 		BDD t21 = Computation(m1, r1, m2, r2);
-		compParser.PrintResult(t21);
 		
+		compParser.PrintResult(t21); //output the result as MDD
+		ComputationParser.ValidateResult(t21, m1.Valid, m2.Valid); // output result validation
 	}
 
 	public void TestDifferentBdd() {

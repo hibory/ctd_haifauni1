@@ -8,6 +8,7 @@ import net.sf.javabdd.BDD;
 public class Req implements Comparable<Req> {	
 	public BDD Bdd;
 	public BDD uncov;
+	public BDD excludeVars;
 	
 	public Req(BDD b){
 		Bdd = b;
@@ -20,5 +21,13 @@ public class Req implements Comparable<Req> {
         }else{
             return 1;
         }
+	}
+
+	public BDD Projection(FocusModel m) {
+		BDD excludeVars = m.IncludedVars.restrict(Bdd); //this all variables except those in t
+		BDD proj = m.Valid.exist(excludeVars); //uncov(t) = Projt(E)
+		proj.andWith(m.Valid);
+		
+		return proj;
 	}
 }

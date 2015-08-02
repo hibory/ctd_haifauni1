@@ -33,7 +33,7 @@ public class FocusModelParser {
 	
 	Map<String, FocusAttribute> AllAttributes;
 	Map<String, FocusAttribute> LocalAttributes;
-	ArrayList<FocusRestriction> rests;
+	ArrayList<FocusRestriction> Restrictions;
 	private String ReqXml;
 	
 	BDD Valid;
@@ -45,27 +45,7 @@ public class FocusModelParser {
 	   Document document = ReadXmlDoc(xml);
 		   
 	   FillAttributes(document);
-	   rests = GetAllRestriction(document); 
-	   
-	   //test that it outputs correctly:
-	   for(FocusAttribute attr : AllAttributes.values()){
-		   System.out.println(attr.Name+":");
-		   for(String v : attr.Values){
-			   System.out.println(v+":");
-		   }
-		   System.out.println("=====");
-	   }
-	   
-	   for(FocusRestriction rest : rests){
-		   System.out.println(rest.Name+":");
-		   System.out.println(rest.Expression+":");
-		   
-		   System.out.println("=====");
-	   }
-	   
-	   
-	   int m = 1;
-	   int m1 = m-1;
+	   Restrictions = GetAllRestriction(document); 
    }
 
 
@@ -82,7 +62,7 @@ public class FocusModelParser {
 		   Valid.andWith(illigal.not());
 	   }
 	   
-	   for(FocusRestriction rest : rests){
+	   for(FocusRestriction rest : Restrictions){
 		   
 		   BDD rulesBdd = bddFactory.one();
 		   for(KeyValuePair rule : rest.Rules){

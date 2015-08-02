@@ -3,6 +3,7 @@ package hellobdd;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.text.html.HTMLEditorKit.Parser;
@@ -78,11 +79,16 @@ public class ComputationParser {
 	}
 
 	public void PrintResult(BDD result) {
+
 		BDD nonMutualVars = Parser1.Model.IncludedVars
 				.and(Parser2.Model.IncludedVars)
 				.exist(Parser2.Model.MutualVars);
 		
-		Iterator<BDD> iterator = result.iterator(nonMutualVars);
+		BDD allVars = Parser1.Model.IncludedVars
+				.and(Parser2.Model.IncludedVars);
+		
+		//Iterator<BDD> iterator = result.iterator(nonMutualVars); //WithoutB Version
+		Iterator<BDD> iterator = result.iterator(allVars);
 		
 		int sats=0;
 		while (iterator.hasNext()) {
@@ -96,12 +102,51 @@ public class ComputationParser {
             	String value = attr.GetValue(sat);
             	Row.put(attr.Name, value);
             	
-            	//System.out.print(attr.Name + ":" + value+"("+ attr.Variables.toString() + ")| ");
+            	System.out.print(attr.Name + ":" + value+"("+ attr.Variables.toString() + ")| ");
             }
             
-            //System.out.println("");
+            System.out.println("");
             sats++;
         }
 		System.out.println("Test plan size :"+sats);
 	}
+	
+	
+	public static void ValidateResult(BDD result, BDD e1, BDD e2){
+			
+		BDD allValid = e1.and(e2);
+		
+		//1. result is contained in Valid of two models
+		BDD conj = allValid.not().and(result);
+		Boolean isContained = conj.satCount()==0;
+		if(!isContained)
+			System.out.println("ERROR: result is not contained in Valid");
+		
+		// 2 result is smaller then valid
+		Boolean isSmaller = result.satCount() < allValid.satCount();
+		if(!isSmaller)
+			System.out.println("ERROR: result is not smaller than Valid");
+		
+		
+		if(isContained  & isSmaller){
+			System.out.println("Validation success! :)");
+			double prc = 1.0 * result.satCount() / allValid.satCount();
+			double savePrc = 1.0 - prc;
+			
+			System.out.println("You decreased Valid by:" +  savePrc);
+			
+		}
+			
+		
+		
+		// 3. for each requirement : check that it's covered
+		//List<Req> allReq = Parser1.Requirements;
+		//allReq.addAll(Parser2.Requirements);
+		
+		//for(Req r : allReq){
+		//	//r.Bdd
+		//}
+		
+	}
+	
 }

@@ -17,7 +17,7 @@ public class main {
 	
 	public static void TestingJavaBDD() {
 		myJavaBdd javaBdd = new myJavaBdd();
-		//javaBdd.runPaypal();
+		javaBdd.runPaypal();
 		
 		String model1 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping.model";
 		String model2 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping_2.model";
@@ -25,8 +25,7 @@ public class main {
 		String req1 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping.ctd.req.xml";
 		String req2 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping_2.ctd.req.xml";
 		
-		javaBdd.RunParser(model1,req1,model2,req2);
-		
+		//javaBdd.RunParser(model1,req1,model2,req2);
 	}
 	
 	public static void TestingJDD(){
