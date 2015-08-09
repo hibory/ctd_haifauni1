@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="US-ASCII" standalone="no"?>
+<!DOCTYPE focus-req [
+ ]>
+
+<!--Demonstration application for shopping and shipping requirements added-->
+<focus-req>
+	<all/>
+  <!-- <requirement>
+    <attribute name="ShowSize" />
+    <attribute name="NumOfDirs"/>
+  </requirement>
+  <requirement>
+    <attribute name="SizeOfFiles" />
+    <attribute name="LastModified" />
+  </requirement>
+  <requirement>
+    <attribute name="RegularRetrevied" />
+    <attribute name="NumOfDirs" />
+  </requirement>
+  <requirement>
+    <attribute name="ShowType" />
+    <attribute name="ChangeTime" />
+  </requirement>
+  <requirement>
+    <attribute name="NumOfDirs" />
+    <attribute name="NumOfFiles" />
+  </requirement> -->
+</focus-req>

@@ -2,7 +2,7 @@ package hellobdd;
 
 public class Debugger{
     public static boolean isEnabled(){
-        return false;
+        return true;
     }
 
     public static void log(Object o){
@@ -13,5 +13,9 @@ public class Debugger{
 	public static void logSameLine(String o) {
 		if(isEnabled())
     		System.out.print(o.toString());
+	}
+	
+	public static void log1(String o) {
+		System.out.print(o.toString());
 	}
 }

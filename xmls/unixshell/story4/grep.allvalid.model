@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="US-ASCII" standalone="no"?>
+<!DOCTYPE focus-model [
+]>
+<!--RestrictionsOncoolerTypes--><focus-model auxDataFilesFolder="" classifyAttributesEnabled="false" inputOutput="false" manual="true">
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="Cooler" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="HowManyFilesFound" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1000+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="FileType" type="STRING">
+<value name="txt"/>
+<value name="doc"/>
+<value name="xls"/>
+<value name="csv"/>
+<value name="xml"/>
+<value name="other"/>
+<value name="dll"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="LastModified" type="STRING">
+<value name="LastHour"/>
+<value name="LastDay"/>
+<value name="LastWeek"/>
+<value name="LastMonth"/>
+<value name="LastYear"/>
+<value name="BeginningOfTime"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="IncludeHidden" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="IncludeReadOnly" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="NumOfDirs" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1000+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="NumOfFiles" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1000+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="SizeOfFiles" type="STRING">
+<value name="0"/>
+<value name="1-1024"/>
+<value name="1025-4096"/>
+<value name="4097+"/>
+</attribute>
+<focus-ctd-decoration/>
+</focus-model>

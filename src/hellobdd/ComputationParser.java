@@ -134,10 +134,8 @@ public class ComputationParser {
 			double savePrc = 1.0 - prc;
 			
 			System.out.println("You decreased Valid by:" +  savePrc);
-			
+			System.out.println("Valid size:" + allValid.satCount());
 		}
-			
-		
 		
 		// 3. for each requirement : check that it's covered
 		//List<Req> allReq = Parser1.Requirements;

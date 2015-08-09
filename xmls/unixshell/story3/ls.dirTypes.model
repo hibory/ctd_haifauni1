@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="US-ASCII" standalone="no"?>
+<!DOCTYPE focus-model [
+]>
+<!--no many subdir in the last hour edited folder , all hidden files are readonly--><focus-model auxDataFilesFolder="" classifyAttributesEnabled="false" inputOutput="false" manual="true">
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="Author" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="CreationTime" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="ChangeTime" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="ShowSize" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="ShowType" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="DirecoryRetrieved" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="SymbolicRetrieved" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="RegularRetrevied" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="CreationTimeSorting" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="LastModified" type="STRING">
+<value name="LastHour"/>
+<value name="LastDay"/>
+<value name="LastWeek"/>
+<value name="LastMonth"/>
+<value name="LastYear"/>
+<value name="BeginningOfTime"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="IncludeHidden" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="IncludeReadOnly" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="NumOfDirs" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1000+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="NumOfFiles" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1000+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="SizeOfFiles" type="STRING">
+<value name="0"/>
+<value name="1-1024"/>
+<value name="1025-4096"/>
+<value name="4097+"/>
+</attribute>
+<restriction expression="NumOfDirs.equals(&quot;1-10&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="1-10" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;11-100&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="11-100" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;101-1000&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="101-1000" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;1000+&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="1000+" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;11-100&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="11-100_1" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;101-1000&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="101-1000_1" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;101-1000&quot;) &amp;&amp; NumOfFiles.equals(&quot;11-100&quot;)" name="1000+_1" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;1000+&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="1000+_2" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;1000+&quot;) &amp;&amp; NumOfFiles.equals(&quot;11-100&quot;)" name="1000+_3" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;1000+&quot;) &amp;&amp; NumOfFiles.equals(&quot;101-1000&quot;)" name="1000+_4" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1-1024&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="11" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1025-4096&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="12" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;4097+&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="13" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="14" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;11-100&quot;)" name="15" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;101-1000&quot;)" name="16" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;1000+&quot;)" name="17" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1-1024&quot;) &amp;&amp; ShowSize.equals(&quot;false&quot;)" name="18" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1025-4096&quot;) &amp;&amp; ShowSize.equals(&quot;false&quot;)" name="19" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;4097+&quot;) &amp;&amp; ShowSize.equals(&quot;false&quot;)" name="20" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;1000+&quot;) &amp;&amp; LastModified.equals(&quot;LastHour&quot;)" name="21" type="Exclusion"/>
+<restriction expression="IncludeHidden.equals(&quot;true&quot;) &amp;&amp; IncludeReadOnly.equals(&quot;false&quot;)" name="22" type="Exclusion"/>
+<focus-ctd-decoration/>
+</focus-model>

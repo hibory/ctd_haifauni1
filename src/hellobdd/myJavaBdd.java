@@ -1,6 +1,8 @@
 package hellobdd;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -30,7 +32,7 @@ public class myJavaBdd {
 		return bdd;
 	}
 	
-	int sizeThresld = 100;
+	int sizeThresld = 10000000;
 	int NumOfNodesSimple = 4;
 	int NumOfNodesPaypal = 8;
 	BDDFactory bdd;
@@ -109,22 +111,12 @@ public class myJavaBdd {
 			
 		List<Req> r1 = new ArrayList<Req>();
 		r1.add(new Req( x1.and(x2).and(x3).and(x4) ));
-		
-		//r1.add(new Req( x1.not().and(x2.not())));
-		//r1.add(new Req( x1.not().and(x2)));
 		//r1.add(new Req( x1.and(x2).and(x3).and(x4) ));
 		//r1.add(new Req( x1.and(x2).and(x5).and(x6)));
 		//r1.add(new Req( x3.and(x4).and(x5).and(x6)));
-		//r1.add(new Req( x1.not().and(x2.not()).and(x3.not()).and(x4.not()) , IncludedVars1 ));
-		//r1.add(new Req( x1.not().and(x2.not()).and(x5.not()).and(x6.not() ), IncludedVars1 ));
-		//r1.add(new Req( x3.not().and(x4).and(x5).and(x6.not()) , IncludedVars1 ));
-			
+
 		List<Req> r2 = new ArrayList<Req>();
 		r2.add(new Req( x5.and(x6).and(x7).and(x8)));
-		
-		//r2.add(new Req( x5.and(x6.not()).and(x7.not()).and(x8.not()) ));
-		//r2.add(new Req( x5.not().and(x6.not()).and(x7).and(x8) ));
-		
 		BDD t21 = Computation(m1,r1,m2,r2);
 		ComputationParser.ValidateResult(t21, m1.Valid, m2.Valid);
 	}
@@ -135,22 +127,16 @@ public class myJavaBdd {
 		BDD e1 = m1.Valid;
 		BDD e2 = m2.Valid;
 		BDD mutual = m2.MutualVars;
+		BDD all = m1.IncludedVars.and(m2.IncludedVars);
+		BDD excludedVars1 = all.exist(m1.IncludedVars);
+		BDD excludedVars2 = all.exist(m2.IncludedVars);
+		
 		
 		//Init: for t in R1 do uncov(t) = Projt(E1)
 		for(Req t : r1){
 			BDD excludeVars = m1.IncludedVars.restrict(t.Bdd); //this all variables except those in t
-			t.uncov = e1.exist(excludeVars); //uncov(t) = Projt(E1)
 			t.excludeVars = excludeVars;
-			
-			System.out.println("T.uncov:");
-			t.uncov.printSet();
-			
-			System.out.println("E1:");
-			e1.printSet();
-			
-			//t.uncov = t.uncov.and(e1);
-			
-			//t.uncov = e1.and(t.Bdd); //old version
+			t.uncov = e1.exist(excludeVars); //uncov(t) = Projt(E1)
 		}
 		
 		//Init: for t in R2 do uncov(t) = Projt(E2)
@@ -159,27 +145,28 @@ public class myJavaBdd {
 			
 			t.excludeVars = excludeVars;
 			t.uncov = e2.exist(excludeVars); //uncov(t) = Projt(E2)
-			
-			System.out.println("T.uncov:");
-			t.uncov.printSet();
-			
-			System.out.println("E2:");
-			e2.printSet();
-			
-			//t.uncov = t.uncov.and(e2);
-			
-			//t.uncov = e2.and(t.Bdd); //old version
 		}
 		
 		while(!r1.isEmpty() || !r2.isEmpty()){
 			
 			if(!r1.isEmpty()){
 				
-				BDD chosen = ChosenTest(r1,m1);
+				BDD chosen = ChosenTest(r1,m1,all);
 				T1 = T1.or(chosen);		
 				
 				//inner join
-				BDD chosenAc = chosen.and(e2).fullSatOne();
+				BDD chosenAc = InnerJoin(chosen,e2,r2);
+				if(chosenAc.satCount()>0){
+					// if found: add to T2, clean from R2
+					BDD c = chosenAc.exist(excludedVars2);
+					T2 = T2.or(c);
+					CleanUncov(r2, c);
+				}
+				else{
+					//not found: just take any from e2
+					chosenAc = chosen.and(e2).fullSatOne();
+				}
+				
 				//chosenAc = chosenAc.exist(mutual);//WithoutB Version
 				T21 = T21.or(chosenAc);
 				
@@ -188,53 +175,60 @@ public class myJavaBdd {
 			
 			if(!r2.isEmpty()){
 				
-				BDD chosen = ChosenTest(r2,m2);
+				BDD chosen = ChosenTest(r2,m2,all);
 				T2 = T2.or(chosen);		
 				
-				//inner join
-				BDD chosenAc = chosen.and(e1).fullSatOne();
-				//chosenAc = chosenAc.exist(mutual);//WithoutB Version				
-				PrintAsDot("ChosenAC:",chosenAc);				
+				BDD chosenAc = InnerJoin(chosen,e1,r1);
+				if(chosenAc.satCount()>0){
+					// if found: add to T2, clean from R2
+					BDD c = chosenAc.exist(excludedVars1);
+					T1 = T1.or(c);
+					CleanUncov(r1, c);
+				}
+				else{
+					//not found: just take any from e2
+					chosenAc = chosen.and(e1).fullSatOne();
+				}
+				
+				//chosenAc = chosenAc.exist(mutual);//WithoutB Version	
 				T21 = T21.or(chosenAc); 
 				
 				CleanUncov(r2,chosen);
 			}
 		}
+
+		//T21.printSet();
+		NumberFormat formatter = new DecimalFormat("0.00000000000");
+		System.out.println("e1 and e2 satcount:"+ formatter.format(e1.and(e2).satCount(all)));
 		
-		T21.printSet();
-		
-		System.out.println("");
-		System.out.println("e1:");
-		e1.printSet();
-		System.out.println("satcount:"+e1.satCount(m1.IncludedVars));
-		
-		System.out.println("");
-		System.out.println("T1:");
-		T1.printSet();
-		System.out.println("satcount:"+T1.satCount(m1.IncludedVars));
-				
-		System.out.println("");
-		System.out.println("e2:");
-		e2.printSet();
-		System.out.println("satcount:"+e2.satCount(m2.IncludedVars));
-		
-		System.out.println("");
-		System.out.println("T2:");
-		T2.printSet();
-		System.out.println("satcount:"+T2.satCount(m2.IncludedVars));
-		
-		System.out.println("");
-		System.out.println("T21:");
-		T21.printSet();
-		System.out.println("satcount:"+T21.satCount(m1.IncludedVars.and(m2.IncludedVars)));
-		
-		System.out.println("");
-		System.out.println("E21:");
-		e1.and(e2).printSet();
-		System.out.println("satcount:"+e1.and(e2).satCount(m1.IncludedVars.and(m2.IncludedVars)));
-		
+		System.out.println("e1 satcount:"+e1.satCount(m1.IncludedVars));
+		System.out.println("T1 satcount:"+T1.satCount(m1.IncludedVars));
+		System.out.println("E2 satcount:"+e2.satCount(m2.IncludedVars));
+		System.out.println("T2 satcount:"+T2.satCount(m2.IncludedVars));
+		System.out.println("T21 satcount:"+T21.satCount(m1.IncludedVars.and(m2.IncludedVars)));
 		
 		return T21;
+	}
+
+	private BDD InnerJoin(BDD chosen, BDD valid, List<Req> reqs) {
+		//go through all reqs ,and try to join with one with with biggest unvoc
+		Collections.sort(reqs);
+		Collections.reverse(reqs);
+		
+		boolean found = false;
+		BDD collected = valid.and(chosen);
+		for(Req t : reqs){		
+			if(collected.and(t.uncov).pathCount()>0){ //if (Collected ^ uncov(t)) != FALSE then
+				collected = collected.and(t.uncov);  //  Collected <- Collected ^ uncov(t)
+				found = true;
+			}
+		}
+		
+		if(found){
+			return collected.fullSatOne();
+		}
+			
+		return bdd.zero();
 	}
 
 	private BDD GetVar(char c) {
@@ -260,7 +254,7 @@ public class myJavaBdd {
 		return bdd.ithVar(i);
 	}
 
-	private BDD ChosenTest(List<Req> rin, FocusModel m) {
+	private BDD ChosenTest(List<Req> rin, FocusModel m, BDD all) {
 		
 		List<Req> r = new ArrayList<Req>(rin);
 		
@@ -269,13 +263,8 @@ public class myJavaBdd {
 		Collections.reverse(r);
 		
 		boolean interrupted = false;
-		for(Req t : r){
-
-			PrintAsDot("t.bdd",t.Bdd);
-			PrintAsDot("t.uncov",t.uncov);
-			PrintAsDot("collected ^ unvoct",collected.and(t.uncov));
-			PrintAsDot("collected",collected);
-			
+		int max = 0;
+		for(Req t : r){		
 			if(collected.and(t.uncov).pathCount()>0) //if (Collected ^ uncov(t)) != FALSE then
 				collected = collected.and(t.uncov);  //  Collected <- Collected ^ uncov(t)
 			
@@ -283,37 +272,45 @@ public class myJavaBdd {
 				interrupted = true;
 				break;                              
 			}
+			max = collected.nodeCount() > max ? collected.nodeCount() : max; 
 		}
 		
 		BDD chosen;
-		int n = (int) collected.pathCount();
-		BDD[] candti = new BDD[n];
-		int[] newCov = new int[n];
 		
 		if(interrupted){
-			for(int i=0; i<n; i++){
-				candti[i] =collected.fullSatOne(); //candti <-randSat(Collected)
+			int n = (int) collected.satCount(all);
+			BDD[] candti = new BDD[n];
+			int[] newCov = new int[n];
+			
+			Iterator<BDD> iterator = collected.iterator(all);
+			
+			int i=0;
+			while (iterator.hasNext()) {
+				candti[i] = iterator.next();
 				newCov[i] = newlyCovered(candti[i],r); //newCovi <-newlyCovered(candidatei,R)
+				i++;
 			}
+			
 			int maxValueIndex = GetMaxValueIndex(newCov);
 			chosen = candti[maxValueIndex].satOne(m.IncludedVars, true); //chosen <- {candti|ForEach j:newCovi >=newCcovj}
 		}
 		else{
-			
-			//chosen = collected.fullSatOne();
-			chosen = collected.satOne(m.IncludedVars, true); //chosen <-randSat(Collected)
-			
-			PrintAsDot("chosen",chosen);
-			PrintAsDot("collected",collected);
+			chosen = collected.satOne(m.IncludedVars, false); //chosen <-randSat(Collected)			
+			//chosen = chosen.exist(m.MutualVars);
 		}
 		
 		return chosen;
 	}
 
-	//todo: implement this method
-	private int newlyCovered(BDD bdd, List<Req> r) {
-		// TODO Auto-generated method stub
-		return 0;
+	//count how many requirements this bdd covers
+	private int newlyCovered(BDD path, List<Req> reqs) {
+		int covered = 0;
+		for(Req t : reqs){
+			BDD bddProj = path.exist(t.excludeVars);
+			if(t.uncov.and(bddProj).satCount()>0)
+				covered++;
+		}
+		return covered;
 	}
 	
 	private int GetMaxValueIndex(int[] array) {
@@ -330,15 +327,11 @@ public class myJavaBdd {
 	}
 
 	public void CleanUncov(List<Req> r,BDD chosen){
-		PrintAsDot("chosen",chosen);
-		PrintAsDot("not chosen",chosen.not());
 		List<Req> ToBeRemoved = new ArrayList<Req>();
 		for(Req t : r){
 			
 			BDD chosenProj = chosen.exist(t.excludeVars);
 			BDD remaining = t.uncov.and(chosenProj.not());
-			PrintAsDot("t.uncov",t.uncov);
-			PrintAsDot("t.uncov ^ chosen.not",remaining);			
 			t.uncov = remaining;
 			
 			if(t.uncov.pathCount()==0){
@@ -357,9 +350,13 @@ public class myJavaBdd {
 		if(Debugger.isEnabled()) b.printDot();
 		Debugger.log("***********************");
 	}
+	
+	public static void Print(String s){
+		System.out.println(s);
+	}
 
 	public void RunParser(String model1, String req1, String model2, String req2) {
-
+		
 		ComputationParser compParser = new ComputationParser(model1, req1, model2, req2);
 		FocusModel m1 = compParser.Parser1.Model;
 		FocusModel m2 = compParser.Parser2.Model;
@@ -367,56 +364,9 @@ public class myJavaBdd {
 		List<Req> r2 = compParser.Parser2.Requirements;
 		bdd = compParser.BddFactory;
 		BDD t21 = Computation(m1, r1, m2, r2);
-		
-		compParser.PrintResult(t21); //output the result as MDD
+		//compParser.PrintResult(m2.Valid);
+		//compParser.PrintResult(t21); //output the result as MDD
 		ComputationParser.ValidateResult(t21, m1.Valid, m2.Valid); // output result validation
-	}
-
-	public void TestDifferentBdd() {
-		BDDFactory bddFactory1 = myJavaBdd.GetBddFactory(5);
-		//BDDFactory bddFactory2 = myJavaBdd.GetBddFactory(10);
-		
-		BDD x1 = bddFactory1.ithVar(1);
-		BDD x2 = bddFactory1.ithVar(2);
-		BDD x4 = bddFactory1.ithVar(4);
-		
-		BDD res = x1.and(x2).and(x4);
-		
-		try {
-			bddFactory1.save("C:\\temp\\bdd.txt", res);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		res.printDot();
-		return;
-	}
-	
-	public void TestUnique() {
-		BDDFactory bddFactory1 = myJavaBdd.GetBddFactory(5);
-		//BDDFactory bddFactory2 = myJavaBdd.GetBddFactory(10);
-		
-		BDD x1 = bddFactory1.ithVar(1);
-		BDD x2 = bddFactory1.ithVar(2);
-		BDD x3 = bddFactory1.ithVar(3);
-		BDD x4 = bddFactory1.ithVar(4);
-		
-		BDD res = (x1.and(x2).and(x3).and(x4))
-			   .or(x1.and(x2.not()).and(x3.not()).and(x4))
-			   .or(x1.and(x2.not()).and(x3).and(x4))
-			   //.or(x1.and(x2.and(x3.not()).and(x4)))
-			   ;
-		
-		BDD u = res.unique(x1.and(x4));
-		
-		res.printDot();
-		u.printDot();
-		
-		return;
-		
-	
 	}
 
 }

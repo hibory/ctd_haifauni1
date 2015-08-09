@@ -1,0 +1,52 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE focus-model [
+<!ELEMENT focus-model (attribute*,restriction*)>
+<!ELEMENT attribute (value*,attr-coding*)>
+<!ATTLIST attribute
+ name CDATA #REQUIRED
+ type CDATA "int">
+<!ELEMENT value EMPTY>
+<!ATTLIST value
+ name CDATA #REQUIRED>
+<!ELEMENT attr-coding (coding-info,case*)>
+<!ELEMENT coding-info EMPTY>
+<!ATTLIST coding-info
+ language CDATA #REQUIRED
+ attr-type CDATA #REQUIRED
+ attr-exp CDATA #REQUIRED
+ group-num CDATA "1">
+<!ELEMENT case (value*)>
+<!ATTLIST case
+ case-exp CDATA #REQUIRED
+ case-print CDATA #IMPLIED>
+<!ELEMENT restriction EMPTY>
+<!ATTLIST restriction
+ name CDATA ""
+ type (Allowed|NotAllowed) "NotAllowed"
+ expression CDATA #REQUIRED>
+ ]>
+
+<!---->
+<focus-model manual="true" inputOutput="true">
+  <attribute name="howMany" type="INT" iotype="INPUT" description="">
+    <value name="1" description=""/>
+    <value name="2" description=""/>
+    <value name="5" description=""/>
+    <value name="10" description=""/>
+    <value name="50" description=""/>
+    <value name="100" description=""/>
+  </attribute>
+  <attribute name="area" type="STRING" iotype="OUTPUT" description="">
+    <value name="1sqm" description=""/>
+    <value name="10sqm" description=""/>
+    <value name="acre" description=""/>
+  </attribute>
+  <attribute name="annualCost" type="INT" iotype="OUTPUT" description="">
+    <value name="1" description=""/>
+    <value name="10" description=""/>
+    <value name="100" description=""/>
+    <value name="1000" description=""/>
+  </attribute>
+	<restriction name="area calc 1" type="NotAllowed" expression="area.equals(&#34;acre&#34;) &#38;&#38; howMany.equals(&#34;1&#34;)"/>
+	<restriction name="area calc 1" type="NotAllowed" expression="annualCost.equals(&#34;1000&#34;) &#38;&#38; howMany.equals(&#34;100&#34;)"/>
+</focus-model>

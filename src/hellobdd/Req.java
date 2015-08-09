@@ -18,9 +18,12 @@ public class Req implements Comparable<Req> {
 	public int compareTo(Req another) {
 		if (this.uncov.pathCount() < another.uncov.pathCount()){
             return -1;
-        }else{
+        }
+		else if (this.uncov.pathCount() > another.uncov.pathCount()){
             return 1;
         }
+		
+		return 0;
 	}
 
 	public BDD Projection(FocusModel m) {

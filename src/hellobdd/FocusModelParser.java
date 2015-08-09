@@ -50,35 +50,7 @@ public class FocusModelParser {
 
 
    private void DefineValid(BDDFactory bddFactory, BDD MutualVars) {
-	   
-	   //assign all requirements & valid-space
-	   Valid = bddFactory.one();
-	   
-	   //remove illigal bdds.
-	   //Example: let attribute have values {0,1,2} , thus BDD variables = x1,x2
-	   //         =>  x1.and(x2) is illigal (implies 3)
-	   for(FocusAttribute attr : AllAttributes.values()){
-		   BDD illigal = attr.GetIlligalBdd();
-		   Valid.andWith(illigal.not());
-	   }
-	   
-	   for(FocusRestriction rest : Restrictions){
-		   
-		   BDD rulesBdd = bddFactory.one();
-		   for(KeyValuePair rule : rest.Rules){
-			   FocusAttribute attr = AllAttributes.get(rule.Key);
-			   BDD b = attr.GetBdd(rule.Value);
-			   rulesBdd = rulesBdd.and(b);
-			   
-			   Print("b",b);
-			   Print("rulesBdd",rulesBdd);
-			   attr.PrintVariables();
-		   }
-		   
-		   Valid = Valid.and(rulesBdd.not());
-		   Print("Valid",Valid);
-	   }
-	   
+	   //set included vars
 	   BDD IncludedVars = bddFactory.one();
 	   for(FocusAttribute attr : LocalAttributes.values()){
 		   for(int i : attr.Variables){
@@ -87,6 +59,33 @@ public class FocusModelParser {
 		   }
 	   }
 	   
+	   //assign all requirements & valid-space
+	   Valid = bddFactory.one();
+	   
+	   //remove illigal bdds.
+	   //Example: let attribute have values {0,1,2} , thus BDD variables = x1,x2
+	   //         =>  x1.and(x2) is illigal (implies 3)
+	   for(FocusAttribute attr : LocalAttributes.values()){
+		   BDD illigal = attr.GetIlligalBdd();
+		   if(illigal.satCount()>0)
+			   Valid.andWith(illigal.not());
+	   }
+	   
+	   System.out.println("valid size:" + Valid.satCount(IncludedVars));
+	   
+	   for(FocusRestriction rest : Restrictions){
+		   
+		   BDD rulesBdd = bddFactory.one();
+		   for(KeyValuePair rule : rest.Rules){
+			   FocusAttribute attr = AllAttributes.get(rule.Key);
+			   BDD b = attr.GetBdd(rule.Value);
+			   rulesBdd = rulesBdd.and(b);
+		   }
+		   
+		   Valid = Valid.and(rulesBdd.not());
+	   }
+	   
+	   System.out.println("valid size:" + Valid.satCount(IncludedVars));
 	   
 	   Model = new FocusModel(Valid, IncludedVars,MutualVars);
    }
@@ -200,27 +199,45 @@ public class FocusModelParser {
 		ArrayList<FocusRequirment> focusReqs = new ArrayList<FocusRequirment>();
 		NodeList nl = document.getElementsByTagName("requirement");
 			
-		   //loop through requirements
-		   for (int i = 0; i < nl.getLength(); i++) {
-			   Element reqEl =  (Element)nl.item(i);
-			   ArrayList<String> attrNames = new ArrayList<String>();
-	           
-	           //loop through attributes
-               NodeList attributes = reqEl.getElementsByTagName("attribute"); 
-               for (int j = 0; j < attributes.getLength(); j++) {
-            	   Element attrEl = (Element)attributes.item(j);
-            	   String name = attrEl.getAttribute("name");
-            	   
-            	   attrNames.add(name);
-               }
-               
-               FocusRequirment req = new FocusRequirment(attrNames);
-               focusReqs.add(req);
-		   }
-		
+	    //loop through requirements
+	    for (int i = 0; i < nl.getLength(); i++) {
+		   Element reqEl =  (Element)nl.item(i);
+		   ArrayList<String> attrNames = new ArrayList<String>();
+           
+           //loop through attributes
+           NodeList attributes = reqEl.getElementsByTagName("attribute"); 
+           for (int j = 0; j < attributes.getLength(); j++) {
+        	   Element attrEl = (Element)attributes.item(j);
+        	   String name = attrEl.getAttribute("name");
+        	   
+        	   attrNames.add(name);
+           }
+           FocusRequirment req = new FocusRequirment(attrNames);
+           focusReqs.add(req);
+	    }
+	    
+	    if(focusReqs.isEmpty()){
+	    	//try to add all possible pairs
+	    	NodeList allNode = document.getElementsByTagName("all");
+	    	if(allNode.getLength()>0){
+	    			    		
+	    		for(String attr1 : LocalAttributes.keySet()){
+	    			for(String attr2 : LocalAttributes.keySet()){
+	    				if(attr1==attr2) break;
+	    					
+	    				ArrayList<String> attrNames = new ArrayList<String>();
+	    				attrNames.add(attr1);
+	    				attrNames.add(attr2);
+	    				
+	    				 FocusRequirment req = new FocusRequirment(attrNames);
+	    		         focusReqs.add(req);
+	    			}
+	    		}
+	    	}
+	    }
+	    
 		return focusReqs;
 	}
-
 
 	public void Define(BDDFactory bddFactory, BDD mutualVars) {
 		DefineValid(bddFactory,mutualVars);

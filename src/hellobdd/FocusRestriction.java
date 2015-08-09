@@ -34,7 +34,6 @@ public class FocusRestriction {
 		Matcher m = p.matcher(equals);
 		String value = null;
 		while(m.find()) {
-		   System.out.println(m.group(0));
 		   value = m.group(1);
 		}
 		return new KeyValuePair(attr,value);

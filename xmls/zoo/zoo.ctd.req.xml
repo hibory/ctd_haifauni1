@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="US-ASCII" standalone="no"?>
+<!DOCTYPE focus-req [
+ ]>
+
+<!--Demonstration application for shopping and shipping requirements added-->
+<focus-req>
+  <requirement>
+    <attribute name="theClass" />
+    <attribute name="food"/>
+  </requirement>
+  <requirement>
+    <attribute name="theClass" />
+    <attribute name="pattable" />
+  </requirement>
+  <requirement>
+    <attribute name="pattable" />
+    <attribute name="howMany" />
+  </requirement>
+</focus-req>

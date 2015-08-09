@@ -46,7 +46,7 @@ public class FocusAttribute {
 
 	private BDD IndexToBdd(int index) {
 		String binary = Integer.toBinaryString(index);
-		Debugger.log("Binary of " + Name + "is:" + binary);
+		
 		int j=0;
 		BDD bdd = BddFactory.one();
 		
@@ -68,19 +68,11 @@ public class FocusAttribute {
 		
 		//assign remaining variables to false
 		for(int i=j; i<Variables.size(); i++){
-			BDD v = BddFactory.ithVar(Variables.get(j));
+			BDD v = BddFactory.ithVar(Variables.get(i));
 			bdd = bdd.and(v.not());
 		}
 		
 		return bdd;
-	}
-
-	public void PrintVariables() {
-		Debugger.log("Variables of " + Name + "are:");
-		for(int i : Variables){
-			//Debugger.logSameLine("," + b.id() );
-		}
-		
 	}
 
 	public BDD GetVarSet() {

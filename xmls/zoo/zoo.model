@@ -1,0 +1,57 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE focus-model [
+<!ELEMENT focus-model (attribute*,restriction*)>
+<!ELEMENT attribute (value*,attr-coding*)>
+<!ATTLIST attribute
+ name CDATA #REQUIRED
+ type CDATA "int">
+<!ELEMENT value EMPTY>
+<!ATTLIST value
+ name CDATA #REQUIRED>
+<!ELEMENT attr-coding (coding-info,case*)>
+<!ELEMENT coding-info EMPTY>
+<!ATTLIST coding-info
+ language CDATA #REQUIRED
+ attr-type CDATA #REQUIRED
+ attr-exp CDATA #REQUIRED
+ group-num CDATA "1">
+<!ELEMENT case (value*)>
+<!ATTLIST case
+ case-exp CDATA #REQUIRED
+ case-print CDATA #IMPLIED>
+<!ELEMENT restriction EMPTY>
+<!ATTLIST restriction
+ name CDATA ""
+ type (Allowed|NotAllowed) "NotAllowed"
+ expression CDATA #REQUIRED>
+ ]>
+
+
+<focus-model manual="true" inputOutput="true">
+  <attribute name="theClass" type="STRING" iotype="INPUT" description="">
+    <value name="mammal" description=""/>
+    <value name="fish" description=""/>
+    <value name="bird" description=""/>
+    <value name="reptile" description=""/>
+  </attribute>
+  <attribute name="food" type="STRING" iotype="INPUT" description="">
+    <value name="herbivore" description=""/>
+    <value name="carnivore" description=""/>
+    <value name="omnivore" description=""/>
+  </attribute>
+  <attribute name="pattable" type="BOOLEAN" iotype="NEITHER" description="">
+    <value name="true" description=""/>
+    <value name="false" description=""/>
+  </attribute>
+  <attribute name="howMany" type="INT" iotype="INPUT" description="">
+    <value name="1" description=""/>
+    <value name="2" description=""/>
+    <value name="5" description=""/>
+    <value name="10" description=""/>
+    <value name="50" description=""/>
+    <value name="100" description=""/>
+  </attribute>
+  <restriction name="area calc 1" type="NotAllowed" expression="theClass.equals(&#34;reptile&#34;) &#38;&#38; pattable.equals(&#34;true&#34;)"/>
+  <restriction name="area calc 2" type="NotAllowed" expression="howMany.equals(&#34;50&#34;) &#38;&#38; pattable.equals(&#34;true&#34;)"/>
+  <restriction name="area calc 3" type="NotAllowed" expression="howMany.equals(&#34;100&#34;) &#38;&#38; pattable.equals(&#34;true&#34;)"/>
+</focus-model>
