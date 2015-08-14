@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="US-ASCII" standalone="no"?>
+<!DOCTYPE focus-model [
+]>
+<!----><focus-model auxDataFilesFolder="" classifyAttributesEnabled="false" inputOutput="false" manual="true">
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="Cooler" type="BOOLEAN">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="HowManyFilesFound" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1001-2000"/>
+<value name="2001-4000"/>
+<value name="4001-8000"/>
+<value name="8001-20000"/>
+<value name="20001-40000"/>
+<value name="40001+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="FileType" type="STRING">
+<value name="txt"/>
+<value name="doc"/>
+<value name="xls"/>
+<value name="csv"/>
+<value name="xml"/>
+<value name="other"/>
+<value name="jpg"/>
+<value name="mpg"/>
+<value name="pdf"/>
+<value name="png"/>
+<value name="mp3"/>
+<value name="avi"/>
+<value name="gho"/>
+<value name="ghs"/>
+<value name="ess"/>
+<value name="ipg"/>
+<value name="gz"/>
+<value name="lbr"/>
+<value name="lqr"/>
+<value name="lzh"/>
+<value name="lz"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="LastModified" type="STRING">
+<value name="LastHour"/>
+<value name="LastDay"/>
+<value name="LastWeek"/>
+<value name="LastMonth"/>
+<value name="LastYear"/>
+<value name="Never"/>
+<value name="Last2Days"/>
+<value name="Last4Hours"/>
+<value name="Last2Weeks"/>
+<value name="Last6Months"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="IncludeHidden" type="BOOLEAN">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="IncludeReadOnly" type="BOOLEAN">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="NumOfDirs" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1001-2000"/>
+<value name="2001-4000"/>
+<value name="4001-8000"/>
+<value name="8001-20000"/>
+<value name="20001-40000"/>
+<value name="40001+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="NumOfFiles" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1001-2000"/>
+<value name="2001-4000"/>
+<value name="4001-8000"/>
+<value name="8001-20000"/>
+<value name="20001-40000"/>
+<value name="40001+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="SizeOfFiles" type="STRING">
+<value name="0"/>
+<value name="1-1024"/>
+<value name="1025-4096"/>
+<value name="4097-8192"/>
+<value name="8193-1684"/>
+<value name="16385-32768"/>
+<value name="32769-65536"/>
+<value name="65537+"/>
+</attribute>
+<restriction expression="NumOfDirs.equals(&quot;1-10&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="1-10" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;11-100&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="11-100" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;101-1000&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="101-1000" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;40001+&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="1000+" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;11-100&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="11-100_1" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;101-1000&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="101-1000_1" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;101-1000&quot;) &amp;&amp; NumOfFiles.equals(&quot;11-100&quot;)" name="1000+_1" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;40001+&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="1000+_2" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;40001+&quot;) &amp;&amp; NumOfFiles.equals(&quot;11-100&quot;)" name="1000+_3" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;40001+&quot;) &amp;&amp; NumOfFiles.equals(&quot;101-1000&quot;)" name="1000+_4" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1-1024&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="11" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1025-4096&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="12" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;4097-8192&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="13" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="14" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;11-100&quot;)" name="15" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;101-1000&quot;)" name="16" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;1001-2000&quot;)" name="17" type="Exclusion"/>
+<focus-ctd-decoration/>
+</focus-model>

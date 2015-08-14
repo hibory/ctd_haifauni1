@@ -16,14 +16,14 @@ public class FocusRestriction {
 	}
 	
 	public void ParseExp(){
-		String[] parts = Expression.split(" ");
-		
-		KeyValuePair rule1 = GetKeyValue(parts[0]);
-		KeyValuePair rule2 = GetKeyValue(parts[2]);
-
 		Rules = new ArrayList<KeyValuePair>();
-		Rules.add(rule1);
-		Rules.add(rule2);
+		String[] parts = Expression.split(" ");
+		for(String p : parts){
+			if(p.indexOf(".equals") < 0) continue;
+			
+			KeyValuePair rule = GetKeyValue(p);	
+			Rules.add(rule);	
+		}
 	}
 
 	private KeyValuePair GetKeyValue(String p1) {

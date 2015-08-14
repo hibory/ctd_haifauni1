@@ -1,0 +1,15 @@
+issues:
+In Models M:
+- NumOfFiles in ls has only 5 values (up to 1000+) but grep had 10 values
+  I've updated NumOfFiles in ls to 10..
+  as a result, this restriction is no longer valid:
+  NumOfFiles.equals(&quot;1000+&quot;)
+   because 1000+ is no longer a valid value .  
+ I've changed this restriction to  1001-2000
+ 
+ 
+
+in Model B:
+- NumOfDir has the exact same problem (ls with 5 values, grep with 10 values)
+  fixed the same way.
+  

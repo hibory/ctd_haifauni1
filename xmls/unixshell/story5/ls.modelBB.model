@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="US-ASCII" standalone="no"?>
+<!DOCTYPE focus-model [
+]>
+<!----><focus-model auxDataFilesFolder="" classifyAttributesEnabled="false" inputOutput="false" manual="true">
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="Author" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="showCreationTime" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="ChangeTime" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="ShowSize" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="ShowType" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="DirecoryRetrieved" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="SymbolicRetrieved" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="RegularRetrevied" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="CreationTimeSorting" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="LastModified" type="STRING">
+<value name="LastHour"/>
+<value name="LastDay"/>
+<value name="LastWeek"/>
+<value name="LastMonth"/>
+<value name="LastYear"/>
+<value name="never"/>
+<value name="Last4Hours"/>
+<value name="Last3Days"/>
+<value name="Last2Weeks"/>
+<value name="Last6Months"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="IncludeHidden" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="IncludeReadOnly" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="NumOfDirs" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1001-2000"/>
+<value name="2001-4000"/>
+<value name="4001-8000"/>
+<value name="8001-20000"/>
+<value name="20001-40000"/>
+<value name="40001+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="NumOfFiles" type="STRING">
+<value name="0"/>
+<value name="1-10"/>
+<value name="11-100"/>
+<value name="101-1000"/>
+<value name="1001-2000"/>
+<value name="2001-4000"/>
+<value name="4001-8000"/>
+<value name="8001-20000"/>
+<value name="20001-40000"/>
+<value name="40001+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="SizeOfFiles" type="STRING">
+<value name="0"/>
+<value name="1-1024"/>
+<value name="1025-4096"/>
+<value name="4097-8192"/>
+<value name="8193-16384"/>
+<value name="16385-32768"/>
+<value name="32769-65536"/>
+<value name="65536+"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="LastUsed" type="STRING">
+<value name="never"/>
+<value name="lastWeek"/>
+<value name="lastMonth"/>
+<value name="lastYear"/>
+<value name="LastHour"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="ShowLastUsed" type="STRING">
+<value name="true"/>
+<value name="false"/>
+</attribute>
+<attribute attr_class="NONE" dependencies="false" description="" iotype="NEITHER" name="CreationTime" type="STRING">
+<value name="never"/>
+<value name="lastHour"/>
+<value name="last4Hours"/>
+<value name="lastDay"/>
+<value name="last3Days"/>
+<value name="lastWeek"/>
+<value name="lastMonth"/>
+<value name="last6Months"/>
+<value name="lastYear"/>
+<value name="last2Years"/>
+</attribute>
+<restriction expression="NumOfDirs.equals(&quot;1-10&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="1-10" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;11-100&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="11-100" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;101-1000&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="101-1000" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;1001-2000&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="1000+" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;11-100&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="11-100_1" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;101-1000&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="101-1000_1" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;101-1000&quot;) &amp;&amp; NumOfFiles.equals(&quot;11-100&quot;)" name="1000+_1" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;1001-2000&quot;)  &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="1000+_2" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;1001-2000&quot;)  &amp;&amp; NumOfFiles.equals(&quot;11-100&quot;)" name="1000+_3" type="Exclusion"/>
+<restriction expression="NumOfDirs.equals(&quot;1001-2000&quot;)  &amp;&amp; NumOfFiles.equals(&quot;101-1000&quot;)" name="1000+_4" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1-1024&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="11" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1025-4096&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="12" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;4097-8192&quot;) &amp;&amp; NumOfFiles.equals(&quot;0&quot;)" name="13" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;1-10&quot;)" name="14" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;11-100&quot;)" name="15" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;101-1000&quot;)" name="16" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;0&quot;) &amp;&amp; NumOfFiles.equals(&quot;1001-2000&quot;) " name="17" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1-1024&quot;) &amp;&amp; ShowSize.equals(&quot;false&quot;)" name="18" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;1025-4096&quot;) &amp;&amp; ShowSize.equals(&quot;false&quot;)" name="19" type="Exclusion"/>
+<restriction expression="SizeOfFiles.equals(&quot;4097-8192&quot;) &amp;&amp; ShowSize.equals(&quot;false&quot;)" name="20" type="Exclusion"/>
+<focus-ctd-decoration/>
+</focus-model>

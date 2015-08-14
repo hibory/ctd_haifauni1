@@ -37,11 +37,29 @@ public class myJavaBdd {
 	int NumOfNodesPaypal = 8;
 	BDDFactory bdd;
 	
-	public void Test(){
-		// TODO Auto-generated method stub
-		System.out.println("Hello, World");
+	/**
+	 * Run CTD computation problem based on given models and requiremnts
+	 * <p>
+	 *
+	 * @param  model1 Path for XML of the first-model
+	 * @param  req1 Path for XML of the second-model's requirements
+	 * @param  model2 Path for XML of the second-model
+	 * @param  req2 Path for XML of the second-model's requirements 
+	 */
+	public void RunParser(String model1, String req1, String model2, String req2) {
 		
+		ComputationParser compParser = new ComputationParser(model1, req1, model2, req2);
+		FocusModel m1 = compParser.Parser1.Model;
+		FocusModel m2 = compParser.Parser2.Model;
+		List<Req> r1 = compParser.Parser1.Requirements;
+		List<Req> r2 = compParser.Parser2.Requirements;
+		bdd = compParser.BddFactory;
+		BDD t21 = Computation(m1, r1, m2, r2);
+		//compParser.PrintResult(m2.Valid);
+		//compParser.PrintResult(t21); //output the result as MDD
+		ComputationParser.ValidateResult(t21, m1.Valid, m2.Valid); // output result validation
 	}
+
 	
 	public void run(){
 		
@@ -111,9 +129,6 @@ public class myJavaBdd {
 			
 		List<Req> r1 = new ArrayList<Req>();
 		r1.add(new Req( x1.and(x2).and(x3).and(x4) ));
-		//r1.add(new Req( x1.and(x2).and(x3).and(x4) ));
-		//r1.add(new Req( x1.and(x2).and(x5).and(x6)));
-		//r1.add(new Req( x3.and(x4).and(x5).and(x6)));
 
 		List<Req> r2 = new ArrayList<Req>();
 		r2.add(new Req( x5.and(x6).and(x7).and(x8)));
@@ -121,41 +136,39 @@ public class myJavaBdd {
 		ComputationParser.ValidateResult(t21, m1.Valid, m2.Valid);
 	}
 	
-	public BDD Computation(FocusModel m1, List<Req> r1, FocusModel m2, List<Req> r2){
+	
+	public BDD Computation(FocusModel e1, List<Req> r1, FocusModel e2, List<Req> r2){
+		
+		if(e1==null || e2==null || r1==null || r2==null)
+			throw new IllegalArgumentException("Error: One or more parameter is null. Please check your the passed parameters");
 		
 		BDD T1 = bdd.zero(),T2 = bdd.zero() ,T21 = bdd.zero();
-		BDD e1 = m1.Valid;
-		BDD e2 = m2.Valid;
-		BDD mutual = m2.MutualVars;
-		BDD all = m1.IncludedVars.and(m2.IncludedVars);
-		BDD excludedVars1 = all.exist(m1.IncludedVars);
-		BDD excludedVars2 = all.exist(m2.IncludedVars);
-		
+
+		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
+		BDD excludedVars1 = allVars.exist(e1.IncludedVars);
+		BDD excludedVars2 = allVars.exist(e2.IncludedVars);
 		
 		//Init: for t in R1 do uncov(t) = Projt(E1)
 		for(Req t : r1){
-			BDD excludeVars = m1.IncludedVars.restrict(t.Bdd); //this all variables except those in t
-			t.excludeVars = excludeVars;
-			t.uncov = e1.exist(excludeVars); //uncov(t) = Projt(E1)
+			t.excludeVars = e1.IncludedVars.restrict(t.Bdd); //this all variables except those in t
+			t.uncov = e1.Valid.exist(t.excludeVars); //uncov(t) = Projt(E1)
 		}
 		
 		//Init: for t in R2 do uncov(t) = Projt(E2)
 		for(Req t : r2){
-			BDD excludeVars = m2.IncludedVars.restrict(t.Bdd); //this all variables except those in t
-			
-			t.excludeVars = excludeVars;
-			t.uncov = e2.exist(excludeVars); //uncov(t) = Projt(E2)
+			t.excludeVars = e2.IncludedVars.restrict(t.Bdd); //this all variables except those in t
+			t.uncov = e2.Valid.exist(t.excludeVars); //uncov(t) = Projt(E2)
 		}
 		
 		while(!r1.isEmpty() || !r2.isEmpty()){
 			
 			if(!r1.isEmpty()){
 				
-				BDD chosen = ChosenTest(r1,m1,all);
+				BDD chosen = ChosenTest(r1 ,e1, allVars);
 				T1 = T1.or(chosen);		
 				
 				//inner join
-				BDD chosenAc = InnerJoin(chosen,e2,r2);
+				BDD chosenAc = InnerJoin(chosen,e2.Valid,r2);
 				if(chosenAc.satCount()>0){
 					// if found: add to T2, clean from R2
 					BDD c = chosenAc.exist(excludedVars2);
@@ -164,10 +177,9 @@ public class myJavaBdd {
 				}
 				else{
 					//not found: just take any from e2
-					chosenAc = chosen.and(e2).fullSatOne();
+					chosenAc = chosen.and(e2.Valid).fullSatOne();
 				}
 				
-				//chosenAc = chosenAc.exist(mutual);//WithoutB Version
 				T21 = T21.or(chosenAc);
 				
 				CleanUncov(r1,chosen);
@@ -175,10 +187,10 @@ public class myJavaBdd {
 			
 			if(!r2.isEmpty()){
 				
-				BDD chosen = ChosenTest(r2,m2,all);
+				BDD chosen = ChosenTest(r2,e2,allVars);
 				T2 = T2.or(chosen);		
 				
-				BDD chosenAc = InnerJoin(chosen,e1,r1);
+				BDD chosenAc = InnerJoin(chosen,e1.Valid,r1);
 				if(chosenAc.satCount()>0){
 					// if found: add to T2, clean from R2
 					BDD c = chosenAc.exist(excludedVars1);
@@ -187,10 +199,9 @@ public class myJavaBdd {
 				}
 				else{
 					//not found: just take any from e2
-					chosenAc = chosen.and(e1).fullSatOne();
+					chosenAc = chosen.and(e1.Valid).fullSatOne();
 				}
-				
-				//chosenAc = chosenAc.exist(mutual);//WithoutB Version	
+					
 				T21 = T21.or(chosenAc); 
 				
 				CleanUncov(r2,chosen);
@@ -198,16 +209,21 @@ public class myJavaBdd {
 		}
 
 		//T21.printSet();
-		NumberFormat formatter = new DecimalFormat("0.00000000000");
-		System.out.println("e1 and e2 satcount:"+ formatter.format(e1.and(e2).satCount(all)));
 		
-		System.out.println("e1 satcount:"+e1.satCount(m1.IncludedVars));
-		System.out.println("T1 satcount:"+T1.satCount(m1.IncludedVars));
-		System.out.println("E2 satcount:"+e2.satCount(m2.IncludedVars));
-		System.out.println("T2 satcount:"+T2.satCount(m2.IncludedVars));
-		System.out.println("T21 satcount:"+T21.satCount(m1.IncludedVars.and(m2.IncludedVars)));
+		System.out.println("e1 and e2 satcount:"+ GetVeryLongNumber(e1.Valid.and(e2.Valid).satCount(allVars)));
+		
+		System.out.println("e1 satcount:"+ GetVeryLongNumber(e1.Valid.satCount(e1.IncludedVars)));
+		System.out.println("T1 satcount:"+T1.satCount(e1.IncludedVars));
+		System.out.println("E2 satcount:"+GetVeryLongNumber(e2.Valid.satCount(e2.IncludedVars)));
+		System.out.println("T2 satcount:"+T2.satCount(e2.IncludedVars));
+		System.out.println("T21 satcount:"+T21.satCount(e1.IncludedVars.and(e2.IncludedVars)));
 		
 		return T21;
+	}
+	
+	private String GetVeryLongNumber(double d){
+		NumberFormat formatter = new DecimalFormat("0.00000000000");
+		return formatter.format(d);
 	}
 
 	private BDD InnerJoin(BDD chosen, BDD valid, List<Req> reqs) {
@@ -278,14 +294,14 @@ public class myJavaBdd {
 		BDD chosen;
 		
 		if(interrupted){
-			int n = (int) collected.satCount(all);
+			int n = sizeThresld;
 			BDD[] candti = new BDD[n];
 			int[] newCov = new int[n];
 			
 			Iterator<BDD> iterator = collected.iterator(all);
 			
 			int i=0;
-			while (iterator.hasNext()) {
+			while (iterator.hasNext() && i<sizeThresld) {
 				candti[i] = iterator.next();
 				newCov[i] = newlyCovered(candti[i],r); //newCovi <-newlyCovered(candidatei,R)
 				i++;
@@ -296,7 +312,6 @@ public class myJavaBdd {
 		}
 		else{
 			chosen = collected.satOne(m.IncludedVars, false); //chosen <-randSat(Collected)			
-			//chosen = chosen.exist(m.MutualVars);
 		}
 		
 		return chosen;
@@ -355,18 +370,5 @@ public class myJavaBdd {
 		System.out.println(s);
 	}
 
-	public void RunParser(String model1, String req1, String model2, String req2) {
-		
-		ComputationParser compParser = new ComputationParser(model1, req1, model2, req2);
-		FocusModel m1 = compParser.Parser1.Model;
-		FocusModel m2 = compParser.Parser2.Model;
-		List<Req> r1 = compParser.Parser1.Requirements;
-		List<Req> r2 = compParser.Parser2.Requirements;
-		bdd = compParser.BddFactory;
-		BDD t21 = Computation(m1, r1, m2, r2);
-		//compParser.PrintResult(m2.Valid);
-		//compParser.PrintResult(t21); //output the result as MDD
-		ComputationParser.ValidateResult(t21, m1.Valid, m2.Valid); // output result validation
-	}
-
+	
 }

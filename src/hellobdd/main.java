@@ -10,26 +10,26 @@ import org.xml.sax.SAXException;
 public class main {
 
 	public static void main(String[] args) {
-	
 		TestingJavaBDD();
-		//TestingJDD();
+		//TestInvalid1();
 	}
 	
 	public static void TestingJavaBDD() {
 		
-		RunLsGrepStory1();
+		//RunLsGrepStory1();
 		//RunLsGrepStory2();
 		//RunLsGrepStory3();
 		//RunLsGrepStory4();
+		RunLsGrepStory5("M");
 	}
-	
-	private static void RunLsGrepStory4() {
-		System.out.println("Story4");
-		String dir = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\unixshell\\story4\\";
-		String model1 = dir + "ls.allvalid.model";
+
+	private static void RunLsGrepStory1() {
+		System.out.println("Story1");
+		String dir = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\unixshell\\story1\\";
+		String model1 = dir + "ls.model";
 		String req1 = dir + "ls.req.xml";
 		
-		String model2 = dir + "grep.allvalid.model";
+		String model2 = dir + "grep.model";
 		String req2 = dir + "grep.req.xml";
 		
 		myJavaBdd javaBdd = new myJavaBdd();
@@ -49,29 +49,30 @@ public class main {
 		myJavaBdd javaBdd = new myJavaBdd();
 		javaBdd.RunParser(model1,req1,model2,req2);
 	}
-
-	private static void RunLsGrepStory2() {
-		System.out.println("Story2");
-		String dir = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\unixshell\\story2\\";
-				
-		String model1 = dir + "ls.timeInputs.model";
+	
+	private static void RunLsGrepStory4() {
+		System.out.println("Story4");
+		String dir = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\unixshell\\story4\\";
+		String model1 = dir + "ls.allvalid.model";
 		String req1 = dir + "ls.req.xml";
 		
-		String model2 = dir + "grep.RestrictedFilesTypes.model";
+		String model2 = dir + "grep.allvalid.model";
 		String req2 = dir + "grep.req.xml";
 		
 		myJavaBdd javaBdd = new myJavaBdd();
 		javaBdd.RunParser(model1,req1,model2,req2);
 	}
-
-	private static void RunLsGrepStory1() {
-		System.out.println("Story1");
-		String dir = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\unixshell\\story1\\";
-		String model1 = dir + "ls.model";
-		String req1 = dir + "ls.req.xml";
+	
+	private static void RunLsGrepStory5(String suffix) {
+		System.out.println("Story5-" + suffix);
+		String dir = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\unixshell\\story5\\";
+		String allReq = dir + "all.req.xml";
 		
-		String model2 = dir + "grep.model";
-		String req2 = dir + "grep.req.xml";
+		String model1 = dir + "ls.model"+suffix +".model";
+		String req1 = allReq;
+		
+		String model2 = dir + "grep.model"+suffix +".model";
+		String req2 = allReq;
 		
 		myJavaBdd javaBdd = new myJavaBdd();
 		javaBdd.RunParser(model1,req1,model2,req2);
@@ -100,4 +101,17 @@ public class main {
 		javaBdd.RunParser(model1,req1,model2,req2);
 	}
 
+	/**
+	 * E1,E2 = null
+	 */
+	private static void TestInvalid1(){
+		myJavaBdd javaBdd = new myJavaBdd();
+		List<Req> r1 = null;
+		List<Req> r2 = null;
+		
+		FocusModel m1 = null;
+		FocusModel m2 = null;
+		javaBdd.Computation(m1, r1, m2, r2);
+	}
+	
 }

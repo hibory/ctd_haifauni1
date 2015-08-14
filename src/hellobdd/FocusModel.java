@@ -7,9 +7,9 @@ public class FocusModel {
 	public BDD IncludedVars;
 	public BDD MutualVars;
 	
-	public FocusModel(BDD valid, BDD inc, BDD mutual){
+	public FocusModel(BDD valid, BDD includedVars, BDD mutualVars){
 		Valid = valid;
-		IncludedVars = inc;
-		MutualVars = mutual;
+		IncludedVars = includedVars;
+		MutualVars = mutualVars;
 	}
 }
