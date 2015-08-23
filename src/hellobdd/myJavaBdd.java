@@ -12,22 +12,27 @@ import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
 public class myJavaBdd {
-
+	static boolean isFactoryInit = false;
 	private static BDDFactory nextFactory(){
-		BDDFactory f = BDDFactory.init(1000, 1000);
-        f.reset();
-        return f;
+		if(isFactoryInit)
+			return bdd;
+		
+		bdd = BDDFactory.init(1000, 1000);
+		bdd.reset();
+		isFactoryInit = true;
+        return bdd;
 	}
 	
 	public static BDDFactory GetBddFactory(int n){
 		BDDFactory bdd = nextFactory();
-		if (bdd.varNum() < n) bdd.setVarNum(n);
-		
-		int[] nodes = new int[n];
-		for(int i=0; i<n; i++)
-			nodes[i] = i;
-		
-		bdd.setVarOrder(nodes);
+		if (bdd.varNum() < n) {
+			bdd.setVarNum(n);
+			int[] nodes = new int[n];
+			for(int i=0; i<n; i++)
+				nodes[i] = i;
+			
+			bdd.setVarOrder(nodes);
+		}
 		
 		return bdd;
 	}
@@ -35,7 +40,8 @@ public class myJavaBdd {
 	int sizeThresld = 10000000;
 	int NumOfNodesSimple = 4;
 	int NumOfNodesPaypal = 8;
-	BDDFactory bdd;
+	static BDDFactory bdd;
+	long MaxNodesSize = 0;
 	
 	/**
 	 * Run CTD computation problem based on given models and requiremnts
@@ -45,22 +51,38 @@ public class myJavaBdd {
 	 * @param  req1 Path for XML of the second-model's requirements
 	 * @param  model2 Path for XML of the second-model
 	 * @param  req2 Path for XML of the second-model's requirements 
+	 * @return 
 	 */
-	public void RunParser(String model1, String req1, String model2, String req2) {
+	public CompositionData RunParser(String model1, String req1, String model2, String req2) {
 		
 		ComputationParser compParser = new ComputationParser(model1, req1, model2, req2);
-		FocusModel m1 = compParser.Parser1.Model;
-		FocusModel m2 = compParser.Parser2.Model;
+		FocusModel e1 = compParser.Parser1.Model;
+		FocusModel e2 = compParser.Parser2.Model;
 		List<Req> r1 = compParser.Parser1.Requirements;
 		List<Req> r2 = compParser.Parser2.Requirements;
 		bdd = compParser.BddFactory;
-		BDD t21 = Computation(m1, r1, m2, r2);
+		CompositionData compData = Computation(e1, r1, e2, r2);
+		
+		PrintSizes(e1,e2,compData);
 		//compParser.PrintResult(m2.Valid);
 		//compParser.PrintResult(t21); //output the result as MDD
-		ComputationParser.ValidateResult(t21, m1.Valid, m2.Valid); // output result validation
+		ComputationParser.ValidateResult(compData.T21, e1.Valid, e2.Valid); // output result validation
+		
+		return compData;
 	}
 
 	
+	private void PrintSizes(FocusModel e1, FocusModel e2, CompositionData compData) {
+		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
+		
+		System.out.println("E1 and E2 satcount:"+ GetVeryLongNumber(e1.Valid.and(e2.Valid).satCount(allVars)));
+		System.out.println("E1 satcount:"+ GetVeryLongNumber(e1.Valid.satCount(e1.IncludedVars)));
+		System.out.println("T1 satcount:"+compData.T1.satCount(e1.IncludedVars));
+		System.out.println("E2 satcount:"+GetVeryLongNumber(e2.Valid.satCount(e2.IncludedVars)));
+		System.out.println("T2 satcount:"+compData.T2.satCount(e2.IncludedVars));
+		System.out.println("T21 satcount:"+compData.T21.satCount(e1.IncludedVars.and(e2.IncludedVars)));
+	}
+
 	public void run(){
 		
 		bdd = GetBddFactory(NumOfNodesSimple);
@@ -132,15 +154,15 @@ public class myJavaBdd {
 
 		List<Req> r2 = new ArrayList<Req>();
 		r2.add(new Req( x5.and(x6).and(x7).and(x8)));
-		BDD t21 = Computation(m1,r1,m2,r2);
-		ComputationParser.ValidateResult(t21, m1.Valid, m2.Valid);
+		CompositionData data = Computation(m1,r1,m2,r2);
+		ComputationParser.ValidateResult(data.T21, m1.Valid, m2.Valid);
 	}
 	
 	
-	public BDD Computation(FocusModel e1, List<Req> r1, FocusModel e2, List<Req> r2){
+	public CompositionData Computation(FocusModel e1, List<Req> r1, FocusModel e2, List<Req> r2){
 		
-		if(e1==null || e2==null || r1==null || r2==null)
-			throw new IllegalArgumentException("Error: One or more parameter is null. Please check your the passed parameters");
+		ValidateInput(e1,r1);
+		ValidateInput(e2,r2);
 		
 		BDD T1 = bdd.zero(),T2 = bdd.zero() ,T21 = bdd.zero();
 
@@ -207,20 +229,20 @@ public class myJavaBdd {
 				CleanUncov(r2,chosen);
 			}
 		}
-
-		//T21.printSet();
 		
-		System.out.println("e1 and e2 satcount:"+ GetVeryLongNumber(e1.Valid.and(e2.Valid).satCount(allVars)));
-		
-		System.out.println("e1 satcount:"+ GetVeryLongNumber(e1.Valid.satCount(e1.IncludedVars)));
-		System.out.println("T1 satcount:"+T1.satCount(e1.IncludedVars));
-		System.out.println("E2 satcount:"+GetVeryLongNumber(e2.Valid.satCount(e2.IncludedVars)));
-		System.out.println("T2 satcount:"+T2.satCount(e2.IncludedVars));
-		System.out.println("T21 satcount:"+T21.satCount(e1.IncludedVars.and(e2.IncludedVars)));
-		
-		return T21;
+		return new CompositionData(T1, T2, T21, e1, e2);
 	}
 	
+	private void ValidateInput(FocusModel e, List<Req> r) {
+		if(e==null || r==null)
+			throw new IllegalArgumentException("Error: One or more parameter is null. Please check your the passed parameters");
+		
+		for(Req t : r){
+			if(!t.Bdd.and(e.IncludedVars).equals(e.IncludedVars))
+				throw new IllegalArgumentException("Error: Requirements contains variables not from respected Valid");
+		}
+	}
+
 	private String GetVeryLongNumber(double d){
 		NumberFormat formatter = new DecimalFormat("0.00000000000");
 		return formatter.format(d);
