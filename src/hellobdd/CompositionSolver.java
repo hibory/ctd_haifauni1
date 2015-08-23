@@ -1,6 +1,5 @@
 package hellobdd;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -11,7 +10,11 @@ import java.util.List;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
-public class myJavaBdd {
+/**
+ * holds the main class which solves the CTD Composition problem.
+ *
+ */
+public class CompositionSolver {
 	static boolean isFactoryInit = false;
 	private static BDDFactory nextFactory(){
 		if(isFactoryInit)
@@ -44,7 +47,7 @@ public class myJavaBdd {
 	long MaxNodesSize = 0;
 	
 	/**
-	 * Run CTD computation problem based on given models and requiremnts
+	 * Run CTD computation problem based on given models and requirements XML files
 	 * <p>
 	 *
 	 * @param  model1 Path for XML of the first-model
@@ -58,8 +61,8 @@ public class myJavaBdd {
 		ComputationParser compParser = new ComputationParser(model1, req1, model2, req2);
 		FocusModel e1 = compParser.Parser1.Model;
 		FocusModel e2 = compParser.Parser2.Model;
-		List<Req> r1 = compParser.Parser1.Requirements;
-		List<Req> r2 = compParser.Parser2.Requirements;
+		List<Requirement> r1 = compParser.Parser1.Requirements;
+		List<Requirement> r2 = compParser.Parser2.Requirements;
 		bdd = compParser.BddFactory;
 		CompositionData compData = Computation(e1, r1, e2, r2);
 		
@@ -82,84 +85,17 @@ public class myJavaBdd {
 		System.out.println("T2 satcount:"+compData.T2.satCount(e2.IncludedVars));
 		System.out.println("T21 satcount:"+compData.T21.satCount(e1.IncludedVars.and(e2.IncludedVars)));
 	}
-
-	public void run(){
-		
-		bdd = GetBddFactory(NumOfNodesSimple);
-		
-		BDD d = GetVar('d');
-		BDD a = GetVar('a');
-		BDD b = GetVar('b');
-		BDD c = GetVar('c');
-		
-		BDD MutualVars = b;
-		BDD IncludedVars1 = d.and(a).and(b);	
-		BDD e1 =   (  d.not().and(a).and(a))
-				.or(  d.and(a).and(b) )
-				.or(  d.not().and(a).and(b.not())  )
-				.or(  d.and(a.not()).and(b) );
-		
-		FocusModel m1 = new FocusModel(e1, IncludedVars1, MutualVars);
-		List<Req> r1 = new ArrayList<Req>();
-		r1.add(new Req(a.and(b)));			
-		
-		BDD IncludedVars2 =b.and(c);
-		BDD e2 = ( b.and(c.not()) )
-			  .or( b.not().and(c.not()) );
-
-		FocusModel m2 = new FocusModel(e2, IncludedVars2, MutualVars);
-		List<Req> r2 = new ArrayList<Req>();
-		r2.add(new Req(b.and(c)));
-		
-		Computation(m1,r1,m2,r2);
-	}
 	
-	public void runPaypal(){
-		
-		bdd = GetBddFactory(NumOfNodesPaypal);
-		
-		BDD x1 = GetVar('1');
-		BDD x2 = GetVar('2');
-		BDD x3 = GetVar('3');
-		BDD x4 = GetVar('4');
-		BDD x5 = GetVar('5');
-		BDD x6 = GetVar('6');
-		BDD x7 = GetVar('7');
-		BDD x8 = GetVar('8');
-		
-		BDD IncludedVars1 = x1.and(x2).and(x3).and(x4).and(x5).and(x6);	
-		BDD MutualVars = x5.and(x6);
-		BDD e1 =   (  x1.not().and(x2.not()).and(x3.not()).and(x4.not()).and(x5.not()).and(x6.not())   )
-				.or(  x1.not().and(x2.not()).and(x3.not()).and(x4).and(x5.not()).and(x6.not()) )
-				.or(  x1.not().and(x2).and(x3.not()).and(x4).and(x5.not()).and(x6.not())  )
-				.or(  x1.not().and(x2).and(x3).and(x4.not()).and(x5.not()).and(x6) )
-				.or(  x1.not().and(x2).and(x3.not()).and(x4).and(x5).and(x6.not()) )
-				.or(  x1.not().and(x2).and(x3).and(x4.not()).and(x5).and(x6.not()) );
-		
-		
-		FocusModel m1 = new FocusModel(e1, IncludedVars1, MutualVars);
-		
-		BDD IncludedVars2 = x5.and(x6).and(x7).and(x8);	
-		BDD e2 =   (  x5.not().and(x6.not()).and(x7.not()).and(x8.not()))
-				.or(  x5.not().and(x6.not()).and(x7).and(x8) )
-				.or(  x5.not().and(x6).and(x7.not()).and(x8)  )
-				.or(  x5.not().and(x6).and(x7).and(x8) )
-				.or(  x5.and(x6.not()).and(x7).and(x8))
-				.or(  x5.and(x6.not()).and(x7.not()).and(x8.not()) );
-		
-		FocusModel m2 = new FocusModel(e2, IncludedVars2, MutualVars);
-			
-		List<Req> r1 = new ArrayList<Req>();
-		r1.add(new Req( x1.and(x2).and(x3).and(x4) ));
-
-		List<Req> r2 = new ArrayList<Req>();
-		r2.add(new Req( x5.and(x6).and(x7).and(x8)));
-		CompositionData data = Computation(m1,r1,m2,r2);
-		ComputationParser.ValidateResult(data.T21, m1.Valid, m2.Valid);
-	}
+	/**
+	 * Computes the composition test-plan T2oT1 of models E1 and E2, which covers R2oR1. 
+	 * @param e1 first model 
+	 * @param r1 first model's requirements
+	 * @param e2 second model
+	 * @param r2 second model's requirements
+	 * @return test-plan T2oT1
+	 */
 	
-	
-	public CompositionData Computation(FocusModel e1, List<Req> r1, FocusModel e2, List<Req> r2){
+	public CompositionData Computation(FocusModel e1, List<Requirement> r1, FocusModel e2, List<Requirement> r2){
 		
 		ValidateInput(e1,r1);
 		ValidateInput(e2,r2);
@@ -171,13 +107,13 @@ public class myJavaBdd {
 		BDD excludedVars2 = allVars.exist(e2.IncludedVars);
 		
 		//Init: for t in R1 do uncov(t) = Projt(E1)
-		for(Req t : r1){
+		for(Requirement t : r1){
 			t.excludeVars = e1.IncludedVars.restrict(t.Bdd); //this all variables except those in t
 			t.uncov = e1.Valid.exist(t.excludeVars); //uncov(t) = Projt(E1)
 		}
 		
 		//Init: for t in R2 do uncov(t) = Projt(E2)
-		for(Req t : r2){
+		for(Requirement t : r2){
 			t.excludeVars = e2.IncludedVars.restrict(t.Bdd); //this all variables except those in t
 			t.uncov = e2.Valid.exist(t.excludeVars); //uncov(t) = Projt(E2)
 		}
@@ -233,11 +169,11 @@ public class myJavaBdd {
 		return new CompositionData(T1, T2, T21, e1, e2);
 	}
 	
-	private void ValidateInput(FocusModel e, List<Req> r) {
+	private void ValidateInput(FocusModel e, List<Requirement> r) {
 		if(e==null || r==null)
 			throw new IllegalArgumentException("Error: One or more parameter is null. Please check your the passed parameters");
 		
-		for(Req t : r){
+		for(Requirement t : r){
 			if(!t.Bdd.and(e.IncludedVars).equals(e.IncludedVars))
 				throw new IllegalArgumentException("Error: Requirements contains variables not from respected Valid");
 		}
@@ -247,15 +183,21 @@ public class myJavaBdd {
 		NumberFormat formatter = new DecimalFormat("0.00000000000");
 		return formatter.format(d);
 	}
-
-	private BDD InnerJoin(BDD chosen, BDD valid, List<Req> reqs) {
-		//go through all reqs ,and try to join with one with with biggest unvoc
+	
+	/**
+	 * InnerJoin considers an input test from one model, and tries to matching test from the second model
+	 * @param chosen BDD of a single valid test from one model.
+	 * @param valid BDD of all valid tests from second model.
+	 * @param reqs list of coverage requirements from the second model 
+	 * @return matching test which covers the most requirements from the second model
+	 */
+	private BDD InnerJoin(BDD chosen, BDD valid, List<Requirement> reqs) {
 		Collections.sort(reqs);
 		Collections.reverse(reqs);
 		
 		boolean found = false;
 		BDD collected = valid.and(chosen);
-		for(Req t : reqs){		
+		for(Requirement t : reqs){		
 			if(collected.and(t.uncov).pathCount()>0){ //if (Collected ^ uncov(t)) != FALSE then
 				collected = collected.and(t.uncov);  //  Collected <- Collected ^ uncov(t)
 				found = true;
@@ -269,40 +211,25 @@ public class myJavaBdd {
 		return bdd.zero();
 	}
 
-	private BDD GetVar(char c) {
-		int i=0;
-		switch(c){
-			case 'd': i=0; break;
-			case 'a': i=1; break;
-			case 'b': i=2; break;
-			case 'c': i=3; break;
-			
-			case '1': i=0; break;
-			case '2': i=1; break;
-			case '3': i=2; break;
-			case '4': i=3; break;
-			case '5': i=4; break;
-			case '6': i=5; break;
-			case '7': i=6; break;
-			case '8': i=7; break;
-			
-			default: i=-1; break;
-		}
+	/**
+	 * ChosenTest considers an input set R of tuples of parameters coverage is required
+	 * and returns a single test that covers as much requirements as possible.
+	 * @param r list of coverage requirements
+	 * @param m model which includes valid tests
+	 * @param all list of all BDD variables
+	 * @return a single test that covers as much requirements as possible.
+	 */
+	private BDD ChosenTest(List<Requirement> r, FocusModel m, BDD all) {
 		
-		return bdd.ithVar(i);
-	}
-
-	private BDD ChosenTest(List<Req> rin, FocusModel m, BDD all) {
-		
-		List<Req> r = new ArrayList<Req>(rin);
+		List<Requirement> reqs = new ArrayList<Requirement>(r);
 		
 		BDD collected = m.Valid;
-		Collections.sort(r); // Sort R in decreasing order of sat(uncov(t))
-		Collections.reverse(r);
+		Collections.sort(reqs); // Sort R in decreasing order of sat(uncov(t))
+		Collections.reverse(reqs);
 		
 		boolean interrupted = false;
 		int max = 0;
-		for(Req t : r){		
+		for(Requirement t : reqs){		
 			if(collected.and(t.uncov).pathCount()>0) //if (Collected ^ uncov(t)) != FALSE then
 				collected = collected.and(t.uncov);  //  Collected <- Collected ^ uncov(t)
 			
@@ -325,7 +252,7 @@ public class myJavaBdd {
 			int i=0;
 			while (iterator.hasNext() && i<sizeThresld) {
 				candti[i] = iterator.next();
-				newCov[i] = newlyCovered(candti[i],r); //newCovi <-newlyCovered(candidatei,R)
+				newCov[i] = newlyCovered(candti[i],reqs); //newCovi <-newlyCovered(candidatei,R)
 				i++;
 			}
 			
@@ -339,10 +266,15 @@ public class myJavaBdd {
 		return chosen;
 	}
 
-	//count how many requirements this bdd covers
-	private int newlyCovered(BDD path, List<Req> reqs) {
+	/**
+	 * Count how many requirements given BDD covers
+	 * @param path single satisfying path as BDD
+	 * @param reqs list of requirements
+	 * @return number of new requirements this path covers
+	 */
+	private int newlyCovered(BDD path, List<Requirement> reqs) {
 		int covered = 0;
-		for(Req t : reqs){
+		for(Requirement t : reqs){
 			BDD bddProj = path.exist(t.excludeVars);
 			if(t.uncov.and(bddProj).satCount()>0)
 				covered++;
@@ -363,9 +295,15 @@ public class myJavaBdd {
 		return index;
 	}
 
-	public void CleanUncov(List<Req> r,BDD chosen){
-		List<Req> ToBeRemoved = new ArrayList<Req>();
-		for(Req t : r){
+	/**
+	 * Given a single test and list of coverage-requirements
+	 * Check for requirements that are fully covered by this test and clean them from the list 
+	 * @param r list of coverage-requirements
+	 * @param chosen a single test BDD
+	 */
+	private void CleanUncov(List<Requirement> r,BDD chosen){
+		List<Requirement> ToBeRemoved = new ArrayList<Requirement>();
+		for(Requirement t : r){
 			
 			BDD chosenProj = chosen.exist(t.excludeVars);
 			BDD remaining = t.uncov.and(chosenProj.not());
@@ -376,21 +314,9 @@ public class myJavaBdd {
 			}
 		}
 		
-		for(Req t : ToBeRemoved){
+		for(Requirement t : ToBeRemoved){
 			r.remove(t);
 		}
 	}
-	
-	public static void PrintAsDot(String s, BDD b){
-		Debugger.log("////////////////////////");
-		Debugger.log(s+":");
-		if(Debugger.isEnabled()) b.printDot();
-		Debugger.log("***********************");
-	}
-	
-	public static void Print(String s){
-		System.out.println(s);
-	}
 
-	
 }

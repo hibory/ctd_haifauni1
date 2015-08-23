@@ -1,21 +1,22 @@
 package hellobdd;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sf.javabdd.BDD;
 
-public class Req implements Comparable<Req> {	
+/**
+ * holds a BDD for a single requirements, and its uncovered tests (called uncov)
+ *
+ */
+public class Requirement implements Comparable<Requirement> {	
 	public BDD Bdd;
 	public BDD uncov;
 	public BDD excludeVars;
 	
-	public Req(BDD b){
+	public Requirement(BDD b){
 		Bdd = b;
 	}
 	
 	@Override
-	public int compareTo(Req another) {
+	public int compareTo(Requirement another) {
 		if (this.uncov.pathCount() < another.uncov.pathCount()){
             return -1;
         }

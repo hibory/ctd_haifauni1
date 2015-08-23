@@ -32,8 +32,8 @@ public class main {
 		String model2 = dir + "grep.model";
 		String req2 = dir + "grep.req.xml";
 		
-		myJavaBdd javaBdd = new myJavaBdd();
-		javaBdd.RunParser(model1,req1,model2,req2);
+		CompositionSolver solver = new CompositionSolver();
+		solver.RunParser(model1,req1,model2,req2);
 	}
 	
 	private static void RunLsGrepStory3() {
@@ -46,8 +46,8 @@ public class main {
 		String model2 = dir + "grep.RestrictedCooler.model";
 		String req2 = dir + "grep.req.xml";
 		
-		myJavaBdd javaBdd = new myJavaBdd();
-		javaBdd.RunParser(model1,req1,model2,req2);
+		CompositionSolver solver = new CompositionSolver();
+		solver.RunParser(model1,req1,model2,req2);
 	}
 	
 	private static void RunLsGrepStory4() {
@@ -59,8 +59,8 @@ public class main {
 		String model2 = dir + "grep.allvalid.model";
 		String req2 = dir + "grep.req.xml";
 		
-		myJavaBdd javaBdd = new myJavaBdd();
-		javaBdd.RunParser(model1,req1,model2,req2);
+		CompositionSolver solver = new CompositionSolver();
+		solver.RunParser(model1,req1,model2,req2);
 	}
 	
 	private static void RunLsGrepStory5(String suffix) {
@@ -74,8 +74,8 @@ public class main {
 		String model2 = dir + "grep.model"+suffix +".model";
 		String req2 = allReq;
 		
-		myJavaBdd javaBdd = new myJavaBdd();
-		javaBdd.RunParser(model1,req1,model2,req2);
+		CompositionSolver solver = new CompositionSolver();
+		solver.RunParser(model1,req1,model2,req2);
 	}
 	
 	private static void RunShoppingShipping() {
@@ -86,8 +86,8 @@ public class main {
 		String model2 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping_2.model";
 		String req2 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\ShoppingShipping_2.ctd.req.xml";
 		
-		myJavaBdd javaBdd = new myJavaBdd();
-		javaBdd.RunParser(model1,req1,model2,req2);
+		CompositionSolver solver = new CompositionSolver();
+		solver.RunParser(model1,req1,model2,req2);
 	}
 	
 	private static void RunZoo() {
@@ -97,21 +97,7 @@ public class main {
 		String req1 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\zoo.ctd.req.xml";
 		String req2 = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\zoo_2.ctd.req.xml";
 		
-		myJavaBdd javaBdd = new myJavaBdd();
-		javaBdd.RunParser(model1,req1,model2,req2);
+		CompositionSolver solver = new CompositionSolver();
+		solver.RunParser(model1,req1,model2,req2);
 	}
-
-	/**
-	 * E1,E2 = null
-	 */
-	private static void TestInvalid1(){
-		myJavaBdd javaBdd = new myJavaBdd();
-		List<Req> r1 = null;
-		List<Req> r2 = null;
-		
-		FocusModel m1 = null;
-		FocusModel m2 = null;
-		javaBdd.Computation(m1, r1, m2, r2);
-	}
-	
 }

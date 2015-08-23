@@ -53,7 +53,7 @@ public class ComputationParser {
 	private BDDFactory AssignVariables(){
 		
 	   int varCount = GetVarCount();
-	   BDDFactory bddFactory = myJavaBdd.GetBddFactory(varCount);
+	   BDDFactory bddFactory = CompositionSolver.GetBddFactory(varCount);
 
 	   //for each attribute attach it's BDD variables
 	   int i=0;
@@ -136,14 +136,6 @@ public class ComputationParser {
 			System.out.println("You decreased Valid by:" +  savePrc);
 			System.out.println("Valid size:" + allValid.satCount());
 		}
-		
-		// 3. for each requirement : check that it's covered
-		//List<Req> allReq = Parser1.Requirements;
-		//allReq.addAll(Parser2.Requirements);
-		
-		//for(Req r : allReq){
-		//	//r.Bdd
-		//}
 		
 	}
 	

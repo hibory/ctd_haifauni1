@@ -19,9 +19,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * Hold a single rule which pairs attribute key to value.
+ *
+ */
 public class FocusModelParser {
 	
-
 	public FocusModelParser(String modelXml, String reqXml, Map<String, FocusAttribute> attributes){
 		AllAttributes = attributes;
 		ReqXml = reqXml;
@@ -37,7 +40,7 @@ public class FocusModelParser {
 	private String ReqXml;
 	
 	BDD Valid;
-	List<Req> Requirements;	
+	List<Requirement> Requirements;	
 	public FocusModel Model;
    
    // read data from xml
@@ -76,7 +79,7 @@ public class FocusModelParser {
 	   for(FocusRestriction rest : Restrictions){
 		   
 		   BDD rulesBdd = bddFactory.one();
-		   for(KeyValuePair rule : rest.Rules){
+		   for(FocusRules rule : rest.Rules){
 			   FocusAttribute attr = AllAttributes.get(rule.Key);
 			   BDD b = attr.GetBdd(rule.Value);
 			   rulesBdd = rulesBdd.and(b);
@@ -167,16 +170,9 @@ public class FocusModelParser {
 		}
 		return document;
 	}
-
-   
-   private void Print(String s, BDD b){
-	   myJavaBdd.PrintAsDot(s, b);
-   }
-
-
    
    private void DefineRequirements(BDDFactory bddFactory) {
-	   Requirements = new ArrayList<Req>();
+	   Requirements = new ArrayList<Requirement>();
 	   
 	   ArrayList<FocusRequirment> reqs = GetRequirements(ReqXml);
 	   for(FocusRequirment focusReq : reqs){
@@ -187,11 +183,10 @@ public class FocusModelParser {
 			   b.andWith(varSet);
 		   }
 		   
-		   Req req = new Req(b);
+		   Requirement req = new Requirement(b);
 		   Requirements.add(req);
 	   }
    }
-
 
 	private ArrayList<FocusRequirment> GetRequirements(String xml) {
 		Document document = ReadXmlDoc(xml);
@@ -243,6 +238,4 @@ public class FocusModelParser {
 		DefineValid(bddFactory,mutualVars);
 		DefineRequirements(bddFactory);
 	}
-   
-	
 }

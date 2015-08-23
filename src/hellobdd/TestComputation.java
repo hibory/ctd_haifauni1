@@ -14,86 +14,78 @@ import net.sf.javabdd.BDDFactory;
 import org.junit.Test;
 
 /**
- * @author amirshwa
+ * a JUNIT class which holds all the unit-tests written in this project.
  *
  */
 public class TestComputation {
 
-	/*@Test
-	public void test() {
-		fail("Not yet implemented");
-	}*/
-
-	/**
-	 * E1,E2 = null
-	 */
 	@Test(expected = IllegalArgumentException.class)  
 	public void TestInvalid1(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		
 		FocusModel e1 = null , e2 = null;
-		List<Req> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqTwo(2,bddFactory);
+		List<Requirement> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqTwo(2,bddFactory);
 		
 		javaBdd.Computation(e1, r1, e2, r2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)  
 	public void TestInvalid2(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = null, r2 = null;
+		List<Requirement> r1 = null, r2 = null;
 		
 		javaBdd.Computation(e1, r1, e2, r2);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)  
 	public void TestInvalid3(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = null, e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = null, r2 = ValidReqTwo(2,bddFactory);
+		List<Requirement> r1 = null, r2 = ValidReqTwo(2,bddFactory);
 		
 		javaBdd.Computation(e1, r1, e2, r2);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)  
 	public void TestInvalid4(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = null;
-		List<Req> r1 = ValidReqTwo(1,bddFactory), r2 = null;
+		List<Requirement> r1 = ValidReqTwo(1,bddFactory), r2 = null;
 		
 		javaBdd.Computation(e1, r1, e2, r2);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)  
 	public void TestInvalid5(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = ValidReqTwo(2,bddFactory), r2 = ValidReqTwo(2,bddFactory);
+		List<Requirement> r1 = ValidReqTwo(2,bddFactory), r2 = ValidReqTwo(2,bddFactory);
 		
 		javaBdd.Computation(e1, r1, e2, r2);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)  
 	public void TestInvalid6(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqTwo(1,bddFactory);
+		List<Requirement> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqTwo(1,bddFactory);
 		
 		javaBdd.Computation(e1, r1, e2, r2);
 	}
 	
 	@Test  
 	public void TestBasic1(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqTwo(2,bddFactory);
+		List<Requirement> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqTwo(2,bddFactory);
 		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
 		
 		CompositionData compData = javaBdd.Computation(e1, r1, e2, r2);
@@ -109,10 +101,10 @@ public class TestComputation {
 	
 	@Test  
 	public void TestBasic2(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = ValidReqAll(1,bddFactory), r2 = ValidReqAll(2,bddFactory);
+		List<Requirement> r1 = ValidReqAll(1,bddFactory), r2 = ValidReqAll(2,bddFactory);
 		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
 		
 		CompositionData compData = javaBdd.Computation(e1, r1, e2, r2);
@@ -128,10 +120,10 @@ public class TestComputation {
 	
 	@Test
 	public void TestBasic3(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqAll(2,bddFactory);
+		List<Requirement> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqAll(2,bddFactory);
 		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
 
 		CompositionData compData = javaBdd.Computation(e1, r1, e2, r2);
@@ -146,10 +138,10 @@ public class TestComputation {
 	
 	@Test
 	public void TestBasic4(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqAll(2,bddFactory);
+		List<Requirement> r1 = ValidReqTwo(1,bddFactory), r2 = ValidReqAll(2,bddFactory);
 		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
 
 		CompositionData compData = javaBdd.Computation(e1, r1, e2, r2);
@@ -164,10 +156,10 @@ public class TestComputation {
 	
 	@Test
 	public void TestEdge1(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = new ArrayList<Req>(), r2 = new ArrayList<Req>();
+		List<Requirement> r1 = new ArrayList<Requirement>(), r2 = new ArrayList<Requirement>();
 		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
 		
 		CompositionData compData = javaBdd.Computation(e1, r1, e2, r2);
@@ -182,10 +174,10 @@ public class TestComputation {
 	
 	@Test
 	public void TestEdge2(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = new ArrayList<Req>(), r2 = ValidReqAll(2,bddFactory);
+		List<Requirement> r1 = new ArrayList<Requirement>(), r2 = ValidReqAll(2,bddFactory);
 		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
 		
 		CompositionData compData = javaBdd.Computation(e1, r1, e2, r2);
@@ -200,10 +192,10 @@ public class TestComputation {
 	
 	@Test
 	public void TestEdge3(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(2,bddFactory);
-		List<Req> r1 = ValidReqAll(1,bddFactory), r2 = ValidReqAll(2,bddFactory);
+		List<Requirement> r1 = ValidReqAll(1,bddFactory), r2 = ValidReqAll(2,bddFactory);
 		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
 		e1.Valid = bddFactory.zero();
 		e2.Valid = bddFactory.zero();
@@ -220,10 +212,10 @@ public class TestComputation {
 	
 	@Test
 	public void TestEdge4(){
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		BDDFactory bddFactory = DummyBdd(javaBdd);
 		FocusModel e1 = ValidModel(1,bddFactory), e2 = ValidModel(1,bddFactory);
-		List<Req> r1 = ValidReqAll(1,bddFactory), r2 = ValidReqAll(1,bddFactory);
+		List<Requirement> r1 = ValidReqAll(1,bddFactory), r2 = ValidReqAll(1,bddFactory);
 		BDD allVars = e1.IncludedVars.and(e2.IncludedVars);
 		
 		CompositionData compData = javaBdd.Computation(e1, r1, e2, r2);
@@ -247,7 +239,7 @@ public class TestComputation {
 		String model2 = dir + "grep.modelM.model";
 		String req2 = allReq;
 		
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		CompositionData compData = javaBdd.RunParser(model1,req1,model2,req2);
 		
 		BDD allVars = compData.M1.IncludedVars.and(compData.M2.IncludedVars);
@@ -271,7 +263,7 @@ public class TestComputation {
 		String model2 = dir + "grep.modelB.model";
 		String req2 = allReq;
 		
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		CompositionData compData = javaBdd.RunParser(model1,req1,model2,req2);
 		
 		BDD allVars = compData.M1.IncludedVars.and(compData.M2.IncludedVars);
@@ -295,7 +287,7 @@ public class TestComputation {
 		String model2 = dir + "grep.modelBB.model";
 		String req2 = allReq;
 		
-		myJavaBdd javaBdd = new myJavaBdd();
+		CompositionSolver javaBdd = new CompositionSolver();
 		CompositionData compData = javaBdd.RunParser(model1,req1,model2,req2);
 		
 		BDD allVars = compData.M1.IncludedVars.and(compData.M2.IncludedVars);
@@ -308,16 +300,16 @@ public class TestComputation {
 		assertTrue(t2Sat > 210);
 	}
 	
-	private List<Req> ValidReqAll(int id, BDDFactory bddFactory) {
+	private List<Requirement> ValidReqAll(int id, BDDFactory bddFactory) {
 		return ValidReq(id, bddFactory, true);
 	}
 	
-	private List<Req> ValidReqTwo(int id, BDDFactory bddFactory) {
+	private List<Requirement> ValidReqTwo(int id, BDDFactory bddFactory) {
 		return ValidReq(id, bddFactory, false);
 	}
 	
 	@SuppressWarnings("serial")
-	private List<Req> ValidReq(int id, BDDFactory bddFactory, boolean allPairs) {
+	private List<Requirement> ValidReq(int id, BDDFactory bddFactory, boolean allPairs) {
 		final BDD a1 = bddFactory.ithVar(0);
 		final BDD a2 = bddFactory.ithVar(1);
 		final BDD b1 = bddFactory.ithVar(2);
@@ -328,33 +320,33 @@ public class TestComputation {
 		switch(id){
 		case 1:
 			if(allPairs)
-				return new ArrayList<Req>(){{ 
-					add(new Req(a1.and(b1)));
-					add(new Req(a1.and(b2)));
-					add(new Req(a2.and(b1)));
-					add(new Req(a2.and(b2)));
+				return new ArrayList<Requirement>(){{ 
+					add(new Requirement(a1.and(b1)));
+					add(new Requirement(a1.and(b2)));
+					add(new Requirement(a2.and(b1)));
+					add(new Requirement(a2.and(b2)));
 					}};
 				
-			return new ArrayList<Req>(){{ 
-				add(new Req(a1.and(b1)));
-				add(new Req(a1.and(b2)));
+			return new ArrayList<Requirement>(){{ 
+				add(new Requirement(a1.and(b1)));
+				add(new Requirement(a1.and(b2)));
 				}};
 		case 2:
 			if(allPairs)
-				return new ArrayList<Req>(){{ 
-					add(new Req(b1.and(c1)));
-					add(new Req(b1.and(c2)));
-					add(new Req(b2.and(c1)));
-					add(new Req(b2.and(c2)));
+				return new ArrayList<Requirement>(){{ 
+					add(new Requirement(b1.and(c1)));
+					add(new Requirement(b1.and(c2)));
+					add(new Requirement(b2.and(c1)));
+					add(new Requirement(b2.and(c2)));
 					}};
 					
-			return new ArrayList<Req>(){{
-				add(new Req(b1.and(c1)));
-				add(new Req(b2.and(c1)));
+			return new ArrayList<Requirement>(){{
+				add(new Requirement(b1.and(c1)));
+				add(new Requirement(b2.and(c1)));
 			}};
 		}
 		
-		return new ArrayList<Req>();
+		return new ArrayList<Requirement>();
 	}
 	
 	private FocusModel ValidModel(int id, BDDFactory bddFactory) {
@@ -394,9 +386,9 @@ public class TestComputation {
 	 * @param javaBdd CTD Composition class 
 	 * @return BDD factory which defines 6 variables
 	 */
-	private BDDFactory DummyBdd(myJavaBdd javaBdd) {
+	private BDDFactory DummyBdd(CompositionSolver javaBdd) {
 		int varCount = 6;
-	    BDDFactory bddFactory = myJavaBdd.GetBddFactory(varCount);
+	    BDDFactory bddFactory = CompositionSolver.GetBddFactory(varCount);
 
 	    return bddFactory;
 	}

@@ -2,6 +2,10 @@ package hellobdd;
 
 import net.sf.javabdd.BDD;
 
+/**
+ * holds computation result: T1, T2, T21.
+ *
+ */
 public class CompositionData {
 	public BDD T1;
 	public BDD T2;

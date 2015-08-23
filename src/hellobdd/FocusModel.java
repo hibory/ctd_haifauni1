@@ -2,6 +2,10 @@ package hellobdd;
 
 import net.sf.javabdd.BDD;
 
+/**
+ * Represents a specific model’s executable tests
+ *
+ */
 public class FocusModel {
 	public BDD Valid;
 	public BDD IncludedVars;

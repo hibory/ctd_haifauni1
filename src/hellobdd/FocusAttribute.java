@@ -6,6 +6,11 @@ import java.util.Collections;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+/**
+ * Represents an attribute within a model, and its possible values.
+  It also holds the BDD variables attached to each value, to allow multi-value support with BDD.
+ *
+ */
 public class FocusAttribute {
 	public String Name;
 	public ArrayList<String> Values;
@@ -112,5 +117,5 @@ public class FocusAttribute {
 		}
 		return res;
 	}
-	
+
 }
