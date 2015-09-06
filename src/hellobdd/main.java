@@ -65,7 +65,7 @@ public class main {
 	
 	private static void RunLsGrepStory5(String suffix) {
 		System.out.println("Story5-" + suffix);
-		String dir = "C:\\Users\\amirshwa\\workspace1\\hellobdd\\xmls\\unixshell\\story5\\";
+		String dir = "xmls\\unixshell\\story5\\";
 		String allReq = dir + "all.req.xml";
 		
 		String model1 = dir + "ls.model"+suffix +".model";
